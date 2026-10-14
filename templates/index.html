@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>50 Startups: CRISP-DM 多元線性迴歸與特徵選擇互動儀表板</title>
+  <title>50 Startups: 獲利白金與特徵選擇之奇妙冒險 (JoJo's Bizarre Regression)</title>
   
-  <!-- Google Fonts: Outfit, Inter, JetBrains Mono -->
+  <!-- Google Fonts: Bungee, Outfit, Bangers, JetBrains Mono, Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bungee&family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;700;800;900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -27,41 +27,35 @@
 
   <style>
     :root {
-      /* Dark Modern Palette */
-      --bg-dark: #070913;
-      --bg-card: rgba(17, 24, 39, 0.72);
-      --bg-card-hover: rgba(30, 41, 59, 0.85);
-      --bg-card-solid: #0f172a;
-      --bg-glass: rgba(255, 255, 255, 0.04);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-focus: rgba(99, 102, 241, 0.45);
+      /* JoJo Iconic Comic Palette */
+      --jojo-purple-dark: #120324;
+      --jojo-purple-deep: #210444;
+      --jojo-purple: #4a047c;
+      --jojo-purple-light: #7b1fa2;
+      --jojo-violet: #a855f7;
       
-      /* Vibrant Accents */
-      --primary: #6366f1;
-      --primary-glow: rgba(99, 102, 241, 0.35);
-      --primary-light: #818cf8;
-      --emerald: #10b981;
-      --emerald-glow: rgba(16, 185, 129, 0.3);
-      --cyan: #06b6d4;
-      --cyan-glow: rgba(6, 182, 212, 0.25);
-      --amber: #f59e0b;
-      --amber-glow: rgba(245, 158, 11, 0.3);
-      --rose: #f43f5e;
-      --purple: #a855f7;
+      --jojo-gold: #fbbf24;
+      --jojo-gold-deep: #d97706;
+      --jojo-gold-glow: rgba(251, 191, 36, 0.45);
       
-      /* Neutral Typography */
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      --jojo-pink: #f43f5e;
+      --jojo-magenta: #ff007f;
+      --jojo-pink-glow: rgba(255, 0, 127, 0.45);
       
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
-      --radius-xl: 28px;
+      --jojo-cyan: #00f0ff;
+      --jojo-cyan-glow: rgba(0, 240, 255, 0.4);
       
-      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 1px 1px var(--border-subtle);
-      --shadow-glow: 0 0 25px var(--primary-glow);
-      --shadow-sweet: 0 0 30px var(--emerald-glow);
+      --jojo-green: #10b981;
+      --jojo-green-glow: rgba(16, 185, 129, 0.4);
+      
+      --jojo-border: #ffd700;
+      --jojo-shadow-comic: 5px 5px 0px #000000;
+      --jojo-shadow-gold: 5px 5px 0px #fbbf24;
+      --jojo-shadow-pink: 5px 5px 0px #ff007f;
+      
+      --text-gold: #fef08a;
+      --text-cyan: #a5f3fc;
+      --text-pink: #fecdd3;
     }
 
     * {
@@ -71,41 +65,44 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-dark);
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background-color: var(--jojo-purple-dark);
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 85% 25%, rgba(16, 185, 129, 0.09) 0%, transparent 40%),
-        radial-gradient(circle at 50% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+        radial-gradient(circle at 10% 10%, rgba(255, 0, 127, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 20%, rgba(0, 240, 255, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(251, 191, 36, 0.12) 0%, transparent 50%),
+        linear-gradient(rgba(18, 3, 36, 0.95), rgba(18, 3, 36, 0.95));
       background-attachment: fixed;
-      color: var(--text-main);
+      color: #f8fafc;
       line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    h1, h2, h3, h4, .font-heading {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    /* JoJo Manga Stylized Onomatopoeia Flourishes */
+    .menacing-text {
+      font-family: 'Bangers', 'Noto Sans TC', sans-serif;
+      color: var(--jojo-magenta);
+      text-shadow: 2px 2px 0px #000, -2px -2px 0px #ffd700;
+      letter-spacing: 0.15em;
+      font-weight: 900;
     }
 
     .container {
       max-width: 1440px;
       margin: 0 auto;
-      padding: 24px 24px 80px;
+      padding: 20px 24px 80px;
     }
 
-    /* Ambient Glass Navbar */
-    .nav-bar {
+    /* Comic JoJo Navbar */
+    .jojo-navbar {
+      background: linear-gradient(90deg, #1c0338 0%, #2e0854 50%, #1c0338 100%);
+      border-bottom: 4px solid var(--jojo-gold);
+      padding: 16px 0;
       position: sticky;
       top: 0;
-      z-index: 100;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      background: rgba(7, 9, 19, 0.78);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 14px 0;
+      z-index: 1000;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
     }
 
     .nav-inner {
@@ -119,576 +116,535 @@
       gap: 16px;
     }
 
-    .brand-group {
+    .brand-jojo {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
-    .brand-icon {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    .brand-stand-badge {
+      background: linear-gradient(135deg, #ff007f 0%, #7b1fa2 100%);
+      border: 3px solid #ffd700;
       border-radius: 12px;
+      width: 52px;
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      color: white;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      font-size: 26px;
+      color: #ffd700;
+      box-shadow: 4px 4px 0px #000;
+      transform: rotate(-4deg);
     }
 
-    .brand-text h1 {
-      font-size: 19px;
-      font-weight: 800;
-      background: linear-gradient(to right, #ffffff, #cbd5e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand-title-group h1 {
+      font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+      font-size: 23px;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 2px 2px 0px #000, 0 0 15px rgba(251, 191, 36, 0.6);
+      letter-spacing: -0.01em;
     }
 
-    .brand-badges {
-      display: flex;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .badge-crisp {
-      background: rgba(99, 102, 241, 0.18);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 1px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-version {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      font-size: 11px;
-      font-weight: 600;
-      padding: 1px 8px;
-      border-radius: 6px;
-    }
-
-    .nav-links {
+    .brand-tags-row {
       display: flex;
       align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .tag-stand {
+      background: var(--jojo-gold);
+      color: #1a052e;
+      font-family: 'Bangers', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .tag-jojo-quote {
+      font-size: 11px;
+      color: #e9d5ff;
+      font-style: italic;
+    }
+
+    .nav-actions {
+      display: flex;
       gap: 12px;
     }
 
-    .nav-btn {
+    .jojo-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--bg-glass);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
+      background: #2b0b4d;
+      border: 2px solid var(--jojo-gold);
+      color: #fef08a;
+      padding: 8px 18px;
+      border-radius: 8px;
       text-decoration: none;
+      font-weight: 700;
       font-size: 13px;
-      font-weight: 500;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 3px 3px 0px #000;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-1px);
+    .jojo-btn:hover {
+      background: var(--jojo-gold);
+      color: #1a052e;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000;
     }
 
-    .nav-btn.primary-btn {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-      color: white;
-      border: none;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    .jojo-btn.pink-btn {
+      background: var(--jojo-magenta);
+      border-color: #ffffff;
+      color: #ffffff;
+      box-shadow: 3px 3px 0px #000;
     }
 
-    .nav-btn.primary-btn:hover {
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-      transform: translateY(-2px);
+    .jojo-btn.pink-btn:hover {
+      background: #ffffff;
+      color: var(--jojo-magenta);
+      border-color: var(--jojo-gold);
+      box-shadow: 5px 5px 0px #fbbf24;
     }
 
-    /* CRISP-DM Process Pipeline Stepper */
-    .crisp-stepper {
+    /* JoJo CRISP-DM 6 Parts Stepper */
+    .crisp-jojo-banner {
+      margin: 24px 0 28px;
+    }
+
+    .jojo-section-title {
+      font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--jojo-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .jojo-stepper-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .jojo-part-card {
+      background: linear-gradient(135deg, rgba(46, 8, 84, 0.8) 0%, rgba(26, 4, 48, 0.9) 100%);
+      border: 2px solid #581c87;
+      border-radius: 12px;
+      padding: 14px 14px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #000;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .jojo-part-card:hover {
+      border-color: var(--jojo-gold);
+      transform: translateY(-3px);
+      box-shadow: 6px 6px 0px #fbbf24;
+    }
+
+    .jojo-part-card.active-part {
+      border-color: var(--jojo-gold);
+      background: linear-gradient(135deg, rgba(88, 28, 135, 0.9) 0%, rgba(46, 8, 84, 0.95) 100%);
+      box-shadow: 5px 5px 0px var(--jojo-gold);
+    }
+
+    .part-tag {
+      font-family: 'Bangers', sans-serif;
+      font-size: 12px;
+      color: var(--jojo-gold);
+      letter-spacing: 0.1em;
+    }
+
+    .part-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 4px 0 2px;
+    }
+
+    .part-subtitle {
+      font-size: 11px;
+      color: #d8b4fe;
+    }
+
+    /* Hero Stand Battle Banner */
+    .jojo-hero-card {
+      background: linear-gradient(135deg, #2e0854 0%, #1a0433 60%, #4a044e 100%);
+      border: 4px solid var(--jojo-gold);
+      border-radius: 16px;
+      padding: 32px 36px;
+      position: relative;
+      box-shadow: 8px 8px 0px #000000, 0 0 35px var(--jojo-gold-glow);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .jojo-hero-card::after {
+      content: 'ゴゴゴゴゴ';
+      position: absolute;
+      right: 20px;
+      bottom: -15px;
+      font-family: 'Bangers', 'Noto Sans TC', sans-serif;
+      font-size: 72px;
+      color: rgba(255, 0, 127, 0.18);
+      font-weight: 900;
+      pointer-events: none;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-stand-name {
+      font-family: 'Bangers', sans-serif;
+      font-size: 18px;
+      color: var(--jojo-cyan);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .jojo-hero-title {
+      font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 3px 3px 0px #000, -1px -1px 0px var(--jojo-magenta);
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .jojo-hero-desc {
+      font-size: 15px;
+      color: #e9d5ff;
+      max-width: 900px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .hero-badges-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .jojo-pill {
+      background: #17042c;
+      border: 2px solid #a855f7;
+      color: #f3e8ff;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 3px 3px 0px #000;
+    }
+
+    .jojo-pill.gold-experience {
+      background: #451a03;
+      border-color: #fbbf24;
+      color: #fef08a;
+      box-shadow: 4px 4px 0px #000, 0 0 15px var(--jojo-gold-glow);
+    }
+
+    .jojo-pill.killer-queen {
+      background: #4c0519;
+      border-color: #f43f5e;
+      color: #fecdd3;
+      box-shadow: 4px 4px 0px #000;
+    }
+
+    /* Stand Stats Hexagon Radar Concept */
+    .stand-stats-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 10px;
-      margin: 24px 0 32px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 2px dashed rgba(255, 215, 0, 0.3);
     }
 
-    .step-node {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 12px 14px;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.25s ease;
-      cursor: pointer;
+    .stand-stat-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
     }
 
-    .step-node::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #4f46e5, #06b6d4);
-      opacity: 0.3;
-    }
-
-    .step-node.active-step {
-      background: rgba(30, 41, 59, 0.85);
-      border-color: var(--primary);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
-    }
-
-    .step-node.active-step::after {
-      opacity: 1;
-      height: 3px;
-      background: linear-gradient(90deg, #6366f1, #10b981);
-    }
-
-    .step-num {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
-    }
-
-    .step-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .step-tag {
+    .stat-label {
       font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* Hero Banner with Visual Data Insights */
-    .hero-card {
-      background: linear-gradient(135deg, rgba(23, 37, 84, 0.75) 0%, rgba(15, 23, 42, 0.85) 60%, rgba(20, 83, 45, 0.4) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-      border-radius: var(--radius-lg);
-      padding: 32px 36px;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 28px;
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-    }
-
-    .hero-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 860px;
-    }
-
-    .hero-title-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .hero-title-row h2 {
-      font-size: 30px;
-      font-weight: 800;
-      color: white;
-    }
-
-    .hero-desc {
-      font-size: 15px;
-      color: #cbd5e1;
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-
-    .hero-badges-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .hero-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 7px 14px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #e2e8f0;
-      backdrop-filter: blur(8px);
-    }
-
-    .hero-pill.sweet-spot-pill {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: rgba(6, 78, 59, 0.45);
-      color: #6ee7b7;
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
-    }
-
-    .hero-pill.cliff-pill {
-      border-color: rgba(245, 158, 11, 0.4);
-      background: rgba(120, 53, 15, 0.4);
-      color: #fde68a;
-    }
-
-    /* Control Deck (Algorithms & Feature Count Slider) */
-    .control-deck {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 24px 28px;
-      margin-bottom: 28px;
-      box-shadow: var(--shadow-card);
-    }
-
-    .deck-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .deck-title {
-      font-size: 13px;
+      color: #d8b4fe;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--cyan);
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .algo-tabs-grid {
+    .stat-rank {
+      font-family: 'Bangers', sans-serif;
+      font-size: 26px;
+      color: #fbbf24;
+      line-height: 1.1;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    .stat-sub {
+      font-size: 10px;
+      color: #a5f3fc;
+    }
+
+    /* Algorithm Control Deck (JoJo Stand Switcher) */
+    .jojo-deck {
+      background: linear-gradient(135deg, rgba(33, 4, 68, 0.9) 0%, rgba(18, 3, 36, 0.95) 100%);
+      border: 3px solid #7b1fa2;
+      border-radius: 16px;
+      padding: 26px 28px;
+      box-shadow: 6px 6px 0px #000;
+      margin-bottom: 30px;
+    }
+
+    .algo-grid-jojo {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
       margin-bottom: 24px;
     }
 
-    .algo-tab-btn {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
+    .jojo-algo-btn {
+      background: #17042c;
+      border: 2px solid #581c87;
+      border-radius: 12px;
       padding: 14px 16px;
       cursor: pointer;
-      color: var(--text-muted);
       text-align: left;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 4px 4px 0px #000;
+      transition: all 0.15s ease;
       position: relative;
     }
 
-    .algo-tab-btn:hover {
-      background: rgba(30, 41, 59, 0.8);
-      border-color: rgba(255, 255, 255, 0.2);
-      color: white;
-      transform: translateY(-2px);
+    .jojo-algo-btn:hover {
+      border-color: var(--jojo-gold);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #fbbf24;
     }
 
-    .algo-tab-btn.active {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(30, 41, 59, 0.9) 100%);
-      border-color: var(--primary);
-      color: white;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    .jojo-algo-btn.active {
+      background: linear-gradient(135deg, #4a047c 0%, #2e0854 100%);
+      border-color: var(--jojo-gold);
+      box-shadow: 5px 5px 0px var(--jojo-gold);
     }
 
-    .algo-tab-btn.active::before {
-      content: '';
+    .jojo-algo-btn.active::before {
+      content: '『STAND』';
       position: absolute;
-      top: 0;
-      left: 15%;
-      width: 70%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+      top: -8px;
+      right: 12px;
+      font-family: 'Bangers', sans-serif;
+      font-size: 10px;
+      background: var(--jojo-gold);
+      color: #1a052e;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
     }
 
-    .algo-name {
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
+    .algo-title-main {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 2px;
     }
 
-    .algo-sub {
+    .algo-stand-codename {
       font-size: 11px;
-      color: var(--text-dim);
+      color: var(--jojo-cyan);
+      font-weight: 700;
     }
 
-    .algo-tab-btn.active .algo-sub {
-      color: #a5b4fc;
+    /* k-Feature Stepper (JoJo Evolution Bar) */
+    .k-stepper-jojo-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 2px solid #581c87;
+      border-radius: 12px;
+      padding: 18px 22px;
     }
 
-    /* Interactive k-Feature Stepper / Timeline */
-    .k-slider-block {
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 18px 24px;
-    }
-
-    .k-stepper-row {
+    .k-nodes-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 12px;
     }
 
-    .k-node {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 14px 12px;
+    .k-jojo-node {
+      background: #190430;
+      border: 2px solid #6b21a8;
+      border-radius: 10px;
+      padding: 12px 10px;
       text-align: center;
       cursor: pointer;
+      box-shadow: 3px 3px 0px #000;
       transition: all 0.2s ease;
       position: relative;
     }
 
-    .k-node:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
+    .k-jojo-node:hover {
+      border-color: var(--jojo-gold);
       transform: translateY(-2px);
     }
 
-    .k-node.active {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);
-      border-color: var(--primary);
-      box-shadow: 0 0 20px var(--primary-glow);
+    .k-jojo-node.active {
+      border-color: var(--jojo-gold);
+      background: linear-gradient(135deg, #581c87 0%, #3b0764 100%);
+      box-shadow: 4px 4px 0px var(--jojo-gold);
     }
 
-    .k-node.sweet-spot {
-      border-color: rgba(16, 185, 129, 0.4);
+    .k-jojo-node.sweet-spot.active {
+      border-color: #34d399;
+      background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+      box-shadow: 4px 4px 0px #34d399, 0 0 20px var(--jojo-green-glow);
     }
 
-    .k-node.sweet-spot.active {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);
-      border-color: var(--emerald);
-      box-shadow: 0 0 25px var(--emerald-glow);
+    .k-jojo-node.cliff.active {
+      border-color: var(--jojo-pink);
+      background: linear-gradient(135deg, #4c0519 0%, #1f020a 100%);
+      box-shadow: 4px 4px 0px var(--jojo-pink);
     }
 
-    .k-node.cliff {
-      border-color: rgba(245, 158, 11, 0.4);
-    }
-
-    .k-node.cliff.active {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(15, 23, 42, 0.9) 100%);
-      border-color: var(--amber);
-      box-shadow: 0 0 25px var(--amber-glow);
-    }
-
-    .k-badge-corner {
-      position: absolute;
-      top: -9px;
-      right: 10px;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 10px;
-      text-transform: uppercase;
+    .k-title-big {
+      font-family: 'Bangers', 'Outfit', sans-serif;
+      font-size: 26px;
+      color: #ffd700;
       letter-spacing: 0.05em;
+      line-height: 1.1;
     }
 
-    .badge-sweet {
-      background: #059669;
-      color: #ffffff;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    .k-desc-sub {
+      font-size: 11px;
+      color: #e9d5ff;
+      font-weight: 600;
+      margin-top: 2px;
     }
 
-    .badge-cliff {
-      background: #d97706;
-      color: #ffffff;
-    }
-
-    .k-num {
-      font-family: 'Outfit', sans-serif;
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 2px;
-    }
-
-    .k-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    /* KPI Metrics Ribbon */
-    .metrics-grid {
+    /* KPI Metrics Display (JoJo Style) */
+    .jojo-metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 16px;
-      margin-bottom: 28px;
+      margin-bottom: 30px;
     }
 
-    .kpi-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
+    .jojo-kpi-card {
+      background: linear-gradient(135deg, rgba(33, 4, 68, 0.95) 0%, rgba(18, 3, 36, 0.95) 100%);
+      border: 3px solid #6b21a8;
+      border-radius: 14px;
       padding: 20px 22px;
+      box-shadow: 5px 5px 0px #000;
+      transition: all 0.2s ease;
       position: relative;
-      overflow: hidden;
-      transition: all 0.25s ease;
-      box-shadow: var(--shadow-card);
     }
 
-    .kpi-card:hover {
+    .jojo-kpi-card:hover {
       transform: translateY(-3px);
-      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 7px 7px 0px var(--jojo-gold);
+      border-color: var(--jojo-gold);
     }
 
-    .kpi-card.highlight-card {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: linear-gradient(135deg, rgba(6, 78, 59, 0.25) 0%, rgba(15, 23, 42, 0.8) 100%);
-      box-shadow: var(--shadow-sweet);
+    .jojo-kpi-card.sweet-card {
+      border-color: #34d399;
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.5) 0%, rgba(18, 3, 36, 0.95) 100%);
+      box-shadow: 5px 5px 0px #34d399;
     }
 
-    .kpi-head {
+    .kpi-jojo-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
     }
 
-    .kpi-title {
+    .kpi-jojo-title {
       font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-    }
-
-    .kpi-pill {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-
-    .pill-green {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-    }
-
-    .pill-blue {
-      background: rgba(99, 102, 241, 0.2);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.4);
-    }
-
-    .pill-amber {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fde68a;
-      border: 1px solid rgba(245, 158, 11, 0.4);
-    }
-
-    .kpi-val {
-      font-family: 'Outfit', sans-serif;
-      font-size: 32px;
       font-weight: 800;
-      color: white;
-      margin-bottom: 6px;
-      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #d8b4fe;
     }
 
-    .kpi-foot {
+    .kpi-badge-gold {
+      background: var(--jojo-gold);
+      color: #1a052e;
+      font-family: 'Bangers', sans-serif;
       font-size: 12px;
-      color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .kpi-badge-pink {
+      background: var(--jojo-magenta);
+      color: #ffffff;
+      font-family: 'Bangers', sans-serif;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+    }
+
+    .kpi-jojo-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      text-shadow: 2px 2px 0px #000;
+      margin-bottom: 6px;
+    }
+
+    .kpi-jojo-foot {
+      font-size: 11.5px;
+      color: #c084fc;
     }
 
     /* Active Predictors Bar */
-    .active-predictors-bar {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 16px 24px;
-      margin-bottom: 28px;
+    .active-chips-banner {
+      background: #1c0433;
+      border: 2px dashed var(--jojo-gold);
+      border-radius: 12px;
+      padding: 14px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 14px;
-      box-shadow: var(--shadow-card);
+      margin-bottom: 28px;
+      box-shadow: 4px 4px 0px #000;
     }
 
-    .chips-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .chips-label {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .feature-chip-visual {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      color: #c7d2fe;
-      font-size: 12px;
-      font-weight: 600;
+    .chip-jojo {
+      background: linear-gradient(135deg, #7b1fa2 0%, #4a047c 100%);
+      border: 1px solid var(--jojo-gold);
+      color: #fef08a;
+      font-size: 12.5px;
+      font-weight: 800;
       padding: 4px 12px;
-      border-radius: 20px;
+      border-radius: 6px;
+      box-shadow: 2px 2px 0px #000;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      animation: fadeIn 0.3s ease;
-    }
-
-    .parsimony-banner {
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
 
     /* Dual Charts Grid */
@@ -696,155 +652,149 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
-      margin-bottom: 28px;
+      margin-bottom: 30px;
     }
 
-    .chart-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 24px 26px;
-      box-shadow: var(--shadow-card);
-      position: relative;
+    .jojo-chart-card {
+      background: linear-gradient(135deg, rgba(33, 4, 68, 0.95) 0%, rgba(18, 3, 36, 0.98) 100%);
+      border: 3px solid #7b1fa2;
+      border-radius: 16px;
+      padding: 22px 24px;
+      box-shadow: 6px 6px 0px #000;
     }
 
-    .chart-card-header {
+    .chart-header-jojo {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .chart-title-group h3 {
+      font-family: 'Outfit', 'Noto Sans TC', sans-serif;
       font-size: 18px;
-      font-weight: 700;
-      color: white;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 2px 2px 0px #000;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .chart-subtitle {
-      font-size: 12px;
-      color: var(--text-dim);
+    .chart-subtitle-jojo {
+      font-size: 11.5px;
+      color: #d8b4fe;
       margin-top: 3px;
     }
 
     .chart-box {
       height: 350px;
       position: relative;
-      width: 100%;
     }
 
-    /* Mathematical Equation Terminal Card */
-    .equation-terminal {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 27, 75, 0.6) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-left: 5px solid var(--primary);
-      border-radius: var(--radius-md);
+    /* Equation Card (JoJo Secret Formula) */
+    .jojo-equation-card {
+      background: linear-gradient(135deg, #2b064c 0%, #150226 100%);
+      border: 3px solid var(--jojo-gold);
+      border-radius: 14px;
       padding: 22px 26px;
-      margin-bottom: 28px;
-      box-shadow: var(--shadow-card);
+      box-shadow: 6px 6px 0px #000;
+      margin-bottom: 30px;
     }
 
-    .eq-header {
+    .eq-header-jojo {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
-    .eq-title {
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
+    .eq-title-jojo {
+      font-family: 'Bangers', 'Noto Sans TC', sans-serif;
+      font-size: 16px;
+      color: var(--jojo-gold);
       letter-spacing: 0.1em;
-      color: var(--primary-light);
+      text-transform: uppercase;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .eq-formula-box {
-      background: rgba(7, 9, 19, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-sm);
+    .eq-code-box {
+      background: #0d011a;
+      border: 2px solid #581c87;
+      border-radius: 8px;
       padding: 16px 20px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 15px;
+      color: #f8fafc;
       line-height: 1.8;
-      color: #e2e8f0;
-      word-break: break-word;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.7);
     }
 
-    .eq-intercept { color: #a5b4fc; font-weight: 700; }
-    .eq-var { color: #38bdf8; font-weight: 700; }
-    .eq-plus { color: #34d399; font-weight: 700; margin: 0 4px; }
-    .eq-minus { color: #f43f5e; font-weight: 700; margin: 0 4px; }
+    .eq-num { color: #fde047; font-weight: 800; }
+    .eq-feature { color: #38bdf8; font-weight: 800; }
+    .eq-sign { color: #f43f5e; font-weight: 900; margin: 0 4px; }
 
-    /* Studio Layout: Coefficients Table & Live Simulator */
-    .studio-grid {
+    /* Studio Grid: Coefficients Table & Live Simulator */
+    .studio-grid-jojo {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
       gap: 24px;
-      margin-bottom: 28px;
+      margin-bottom: 30px;
     }
 
-    .studio-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
+    .studio-box-jojo {
+      background: linear-gradient(135deg, rgba(33, 4, 68, 0.95) 0%, rgba(18, 3, 36, 0.95) 100%);
+      border: 3px solid #7b1fa2;
+      border-radius: 16px;
       padding: 24px 26px;
-      box-shadow: var(--shadow-card);
+      box-shadow: 6px 6px 0px #000;
     }
 
-    /* Table Visual Styling */
-    .table-container {
+    /* Table Styles */
+    .jojo-table-wrap {
       overflow-x: auto;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      border: 2px solid #581c87;
     }
 
-    table.modern-table {
+    table.jojo-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
       text-align: left;
     }
 
-    table.modern-table thead {
-      background: rgba(30, 41, 59, 0.7);
-      border-bottom: 1px solid var(--border-subtle);
+    table.jojo-table thead {
+      background: #2a084e;
+      border-bottom: 2px solid #ffd700;
     }
 
-    table.modern-table th {
-      padding: 12px 14px;
+    table.jojo-table th {
+      padding: 12px 12px;
+      font-family: 'Outfit', sans-serif;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
+      color: var(--jojo-gold);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--text-muted);
     }
 
-    table.modern-table td {
-      padding: 13px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #cbd5e1;
+    table.jojo-table td {
+      padding: 12px 12px;
+      border-bottom: 1px solid rgba(123, 31, 162, 0.3);
+      color: #e9d5ff;
     }
 
-    table.modern-table tbody tr:hover {
-      background: rgba(255, 255, 255, 0.03);
+    table.jojo-table tbody tr:hover {
+      background: rgba(123, 31, 162, 0.2);
     }
 
-    .vif-gauge-bar {
-      width: 60px;
+    .vif-mini-bar {
+      width: 50px;
       height: 6px;
-      background: rgba(255, 255, 255, 0.1);
+      background: #3b0764;
       border-radius: 3px;
       overflow: hidden;
       display: inline-block;
@@ -852,207 +802,130 @@
       margin-left: 6px;
     }
 
-    .vif-fill {
+    .vif-fill-bar {
       height: 100%;
       border-radius: 3px;
     }
 
-    /* Visual Profit Predictor Simulator */
-    .simulator-box {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    /* Live Stand Simulator Studio */
+    .sim-slider-row {
+      background: #140224;
+      border: 2px solid #581c87;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
     }
 
-    .scenario-presets {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 6px;
-    }
-
-    .scenario-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 5px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .scenario-btn:hover {
-      background: rgba(99, 102, 241, 0.2);
-      border-color: var(--primary);
-      color: white;
-    }
-
-    .sim-input-row {
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      transition: border-color 0.2s ease;
-    }
-
-    .sim-input-row:focus-within {
-      border-color: var(--border-focus);
-    }
-
-    .sim-label-bar {
+    .sim-label-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    .sim-label-name {
+    .sim-feature-title {
       font-size: 13px;
-      font-weight: 600;
-      color: #e2e8f0;
+      font-weight: 800;
+      color: #ffd700;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .sim-label-val {
+    .sim-val-number {
       font-family: 'JetBrains Mono', monospace;
       font-size: 14px;
-      font-weight: 700;
-      color: var(--cyan);
+      font-weight: 800;
+      color: var(--jojo-cyan);
     }
 
-    .sim-range {
+    .jojo-slider {
       width: 100%;
       height: 6px;
       border-radius: 3px;
-      background: #1e293b;
+      background: #2a084e;
       outline: none;
       -webkit-appearance: none;
       cursor: pointer;
     }
 
-    .sim-range::-webkit-slider-thumb {
+    .jojo-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
+      background: linear-gradient(135deg, #ffd700, #ff007f);
       border: 2px solid #ffffff;
-      transition: transform 0.1s;
+      box-shadow: 0 0 10px #fbbf24;
+      cursor: pointer;
     }
 
-    .sim-range::-webkit-slider-thumb:hover {
-      transform: scale(1.15);
-    }
-
-    .sim-select {
+    .jojo-select {
       width: 100%;
-      background: #0f172a;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
+      background: #190430;
+      border: 2px solid #581c87;
+      border-radius: 8px;
+      padding: 8px 12px;
       font-size: 13px;
-      color: white;
+      font-weight: 700;
+      color: #ffffff;
       outline: none;
     }
 
-    .sim-select:focus {
-      border-color: var(--primary);
-    }
-
-    /* Massive Visual Prediction Output Display */
-    .prediction-hero-box {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.9) 100%);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      border-radius: var(--radius-md);
-      padding: 22px;
+    /* Output Stand Power Box (THE WORLD) */
+    .the-world-box {
+      background: linear-gradient(135deg, #3b0764 0%, #17022b 100%);
+      border: 3px solid #fbbf24;
+      border-radius: 14px;
+      padding: 20px;
       text-align: center;
-      box-shadow: var(--shadow-sweet);
-      margin-top: 8px;
+      box-shadow: 6px 6px 0px #000, 0 0 25px var(--jojo-gold-glow);
+      margin-top: 14px;
+      position: relative;
     }
 
-    .pred-hero-label {
-      font-size: 12px;
-      font-weight: 700;
+    .world-stand-label {
+      font-family: 'Bangers', sans-serif;
+      font-size: 14px;
+      color: var(--jojo-cyan);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #a7f3d0;
-      margin-bottom: 6px;
     }
 
-    .pred-hero-val {
+    .world-amount {
       font-family: 'Outfit', sans-serif;
-      font-size: 42px;
+      font-size: 44px;
       font-weight: 900;
       color: #34d399;
+      text-shadow: 3px 3px 0px #000, 0 0 20px rgba(52, 211, 153, 0.6);
+      margin: 4px 0 10px;
       letter-spacing: -0.02em;
-      text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
-      margin-bottom: 12px;
     }
 
-    /* Contribution Breakdown Visualization */
-    .breakdown-box {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
+    .waterfall-jojo-box {
+      background: #0d011a;
+      border: 1px solid #581c87;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: left;
       font-size: 12px;
     }
 
-    .breakdown-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 8px;
-    }
-
-    .breakdown-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .breakdown-bar-wrap {
-      width: 100%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 2px;
-      margin-bottom: 8px;
-    }
-
-    .breakdown-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #6366f1, #06b6d4);
-      border-radius: 3px;
-      transition: width 0.3s ease;
-    }
-
-    /* Outliers & Diagnostics Section */
-    .diagnostics-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
+    /* Outliers Diagnostics */
+    .outliers-jojo-box {
+      background: linear-gradient(135deg, rgba(33, 4, 68, 0.95) 0%, rgba(18, 3, 36, 0.95) 100%);
+      border: 3px solid #7b1fa2;
+      border-radius: 16px;
       padding: 24px 26px;
-      box-shadow: var(--shadow-card);
+      box-shadow: 6px 6px 0px #000;
       margin-bottom: 40px;
     }
 
-    /* Footer */
+    /* JoJo Footer */
     footer {
-      border-top: 1px solid var(--border-subtle);
-      background: rgba(7, 9, 19, 0.8);
-      padding: 40px 0;
+      background: #0e021c;
+      border-top: 4px solid var(--jojo-gold);
+      padding: 36px 0;
       margin-top: 60px;
     }
 
@@ -1063,54 +936,30 @@
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 30px;
+      gap: 24px;
     }
 
-    .ack-card {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 16px 20px;
-      line-height: 1.7;
-      font-size: 13px;
-      color: #94a3b8;
-    }
-
-    .ack-card a {
-      color: var(--primary-light);
-      text-decoration: underline;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Responsive */
     @media (max-width: 1024px) {
       .dual-charts-grid,
-      .studio-grid {
+      .studio-grid-jojo {
         grid-template-columns: 1fr;
       }
-      .crisp-stepper {
+      .jojo-stepper-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .stand-stats-grid {
         grid-template-columns: repeat(3, 1fr);
       }
     }
 
     @media (max-width: 640px) {
-      .crisp-stepper {
+      .jojo-stepper-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-      .k-stepper-row {
+      .k-nodes-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-      .hero-card {
-        padding: 24px 20px;
-      }
-      .hero-title-row h2 {
-        font-size: 22px;
-      }
-      .pred-hero-val {
+      .world-amount {
         font-size: 32px;
       }
     }
@@ -1118,27 +967,27 @@
 </head>
 <body>
 
-  <!-- Top Ambient Navigation Bar -->
-  <header class="nav-bar">
+  <!-- Comic JoJo Header -->
+  <header class="jojo-navbar">
     <div class="nav-inner">
-      <div class="brand-group">
-        <div class="brand-icon">
-          <i class="fa-solid fa-chart-line"></i>
+      <div class="brand-jojo">
+        <div class="brand-stand-badge">
+          <i class="fa-solid fa-bolt-lightning"></i>
         </div>
-        <div class="brand-text">
-          <h1>50 Startups 多元線性迴歸與特徵選擇儀表板</h1>
-          <div class="brand-badges">
-            <span class="badge-crisp">CRISP-DM 標準流程</span>
-            <span class="badge-version">StatsUnlock SaaS 佈局</span>
+        <div class="brand-title-group">
+          <h1>50 Startups：獲利白金與特徵選擇之奇妙冒險</h1>
+          <div class="brand-tags-row">
+            <span class="tag-stand">STAND: PROFIT PLATINUM</span>
+            <span class="tag-jojo-quote">「你的預測誤差已然被削去了！這就是黃金體驗！」</span>
           </div>
         </div>
       </div>
-      <div class="nav-links">
-        <a href="https://github.com/ryanlin19960221/AIoT-DIC2-MultipleLR" target="_blank" class="nav-btn">
-          <i class="fa-brands fa-github"></i> GitHub 儲存庫
+      <div class="nav-actions">
+        <a href="https://github.com/ryanlin19960221/AIoT-DIC2-MultipleLR" target="_blank" class="jojo-btn">
+          <i class="fa-brands fa-github"></i> GitHub 替身殿堂
         </a>
-        <a href="https://statsunlock.com/multiple-linear-regression-calculator/" target="_blank" class="nav-btn primary-btn">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> 設計參考: StatsUnlock
+        <a href="https://ryanlin19960221.github.io/AIoT-DIC2-MultipleLR/" target="_blank" class="jojo-btn pink-btn">
+          <i class="fa-solid fa-play"></i> LIVE DEMO
         </a>
       </div>
     </div>
@@ -1146,230 +995,255 @@
 
   <div class="container">
 
-    <!-- CRISP-DM 6-Stage Process Stepper -->
-    <div class="crisp-stepper">
-      <div class="step-node" onclick="showCrispInfo(1)">
-        <div class="step-num">STAGE 01</div>
-        <div class="step-title"><i class="fa-solid fa-bullseye" style="color: var(--primary);"></i> 商業理解</div>
-        <div class="step-tag">新創獲利預測與歸因</div>
+    <!-- CRISP-DM 替身六部曲 Stepper -->
+    <div class="crisp-jojo-banner">
+      <div class="jojo-section-title">
+        <i class="fa-solid fa-compass"></i> CRISP-DM 替身六部曲 (THE SIX PARTS OF DATA MINING)
       </div>
-      <div class="step-node" onclick="showCrispInfo(2)">
-        <div class="step-num">STAGE 02</div>
-        <div class="step-title"><i class="fa-solid fa-database" style="color: var(--cyan);"></i> 資料理解</div>
-        <div class="step-tag">50 樣本無缺失值檢查</div>
-      </div>
-      <div class="step-node" onclick="showCrispInfo(3)">
-        <div class="step-num">STAGE 03</div>
-        <div class="step-title"><i class="fa-solid fa-filter" style="color: var(--amber);"></i> 資料準備</div>
-        <div class="step-tag">One-Hot 消除虛擬變數陷阱</div>
-      </div>
-      <div class="step-node active-step" onclick="showCrispInfo(4)">
-        <div class="step-num">STAGE 04</div>
-        <div class="step-title"><i class="fa-solid fa-brain" style="color: var(--emerald);"></i> 建立模型</div>
-        <div class="step-tag">5 種特徵選擇演算法</div>
-      </div>
-      <div class="step-node active-step" onclick="showCrispInfo(5)">
-        <div class="step-num">STAGE 05</div>
-        <div class="step-title"><i class="fa-solid fa-chart-pie" style="color: var(--purple);"></i> 模型評估</div>
-        <div class="step-tag">奧坎剃刀: k=2 甜蜜點</div>
-      </div>
-      <div class="step-node" onclick="showCrispInfo(6)">
-        <div class="step-num">STAGE 06</div>
-        <div class="step-title"><i class="fa-solid fa-rocket" style="color: var(--rose);"></i> 部署推論</div>
-        <div class="step-tag">即時預測 API 互動器</div>
+      <div class="jojo-stepper-grid">
+        <div class="jojo-part-card" onclick="alert('【Part 1: 幻影血石】商業理解：覺醒獲利黃金之心，探究研發、行政、行銷對企業命運的決定性影響！')">
+          <div class="part-tag">PART 1</div>
+          <div class="part-title">商業理解</div>
+          <div class="part-subtitle">覺醒獲利黃金之心</div>
+        </div>
+        <div class="jojo-part-card" onclick="alert('【Part 2: 戰鬥潮流】資料理解：50 家新創的波紋疾走，100% 完整零缺失值的純淨脈動！')">
+          <div class="part-tag">PART 2</div>
+          <div class="part-title">資料理解</div>
+          <div class="part-subtitle">50 樣本波紋疾走</div>
+        </div>
+        <div class="jojo-part-card" onclick="alert('【Part 3: 星塵遠征軍】資料準備：One-Hot 替身覺醒！以基準類別徹底擊碎多重共線性陷阱！')">
+          <div class="part-tag">PART 3</div>
+          <div class="part-title">資料準備</div>
+          <div class="part-subtitle">粉碎虛擬變數陷阱</div>
+        </div>
+        <div class="jojo-part-card active-part" onclick="alert('【Part 4: 不滅鑽石】建立模型：5 大替身演算法之能力交鋒（Lasso、SFS、RFE、ElasticNet、Exhaustive）！')">
+          <div class="part-tag">PART 4</div>
+          <div class="part-title">建立模型</div>
+          <div class="part-subtitle">5 大替身能力交鋒</div>
+        </div>
+        <div class="jojo-part-card active-part" onclick="alert('【Part 5: 黃金之風】模型評估：奧坎剃刀黃金體驗！k=2 最小誤差 vs k=5 敗者食塵過擬合大爆炸！')">
+          <div class="part-tag">PART 5</div>
+          <div class="part-title">模型評估</div>
+          <div class="part-subtitle">k=2 黃金體驗甜蜜點</div>
+        </div>
+        <div class="jojo-part-card" onclick="alert('【Part 6: 石之海】部署推論：世界 (THE WORLD)！時間停止，計算終極獲利！')">
+          <div class="part-tag">PART 6</div>
+          <div class="part-title">部署推論</div>
+          <div class="part-subtitle">世界 (THE WORLD) 推論</div>
+        </div>
       </div>
     </div>
 
-    <!-- Hero Card Banner -->
-    <div class="hero-card">
-      <div class="hero-content">
-        <div class="hero-title-row">
-          <h2>特徵選擇與模型精簡性分析 (Occam's Razor)</h2>
+    <!-- Hero Stand Battle Card -->
+    <div class="jojo-hero-card">
+      <div class="hero-stand-name">『STAND CLASH: OCCAM'S RAZOR vs OVERFITTING』</div>
+      <h2 class="jojo-hero-title">特徵選擇替身戰：奧坎剃刀黃金體驗</h2>
+      <p class="jojo-hero-desc">
+        橫向召喚 <strong>5 大機器學習替身</strong>（白金之星・Lasso L1、黃金體驗・Forward SFS、轟炸空間・RFE、鋼鏈手指・ElasticNet、天國製造・Exhaustive）。
+        貫徹<strong>奧坎剃刀（Occam's Razor）</strong>，以最簡約的自變數締造全域最低 RMSE，痛擊盲目疊加特徵所觸發的<strong>『敗者食塵 (Overfitting Cliff)』</strong>！
+      </p>
+
+      <div class="hero-badges-flex">
+        <span class="jojo-pill gold-experience"><i class="fa-solid fa-crown"></i> 奧坎剃刀甜蜜點: k=1~2 (全域最低 RMSE $7,714)</span>
+        <span class="jojo-pill killer-queen"><i class="fa-solid fa-skull"></i> 敗者食塵懸崖: k=5 (噪聲爆炸，RMSE 狂升至 $9,055)</span>
+        <span class="jojo-pill"><i class="fa-solid fa-fire"></i> 研發支出 (R&D Spend) 破壞力 A 級 (解釋力 > 92%)</span>
+      </div>
+
+      <!-- Stand Stats Radar Bar -->
+      <div class="stand-stats-grid">
+        <div class="stand-stat-box">
+          <div class="stat-label">破壞力 (Power)</div>
+          <div class="stat-rank">A</div>
+          <div class="stat-sub">R&D Spend 核心爆發</div>
         </div>
-        <p class="hero-desc">
-          橫向評估 5 種機器學習特徵選擇演算法（<strong>Lasso L1</strong>、<strong>Forward SFS</strong>、<strong>RFE</strong>、<strong>ElasticNet</strong>、<strong>Exhaustive Search</strong>）對決 OLS 基準模型。
-          直觀掌握特徵數量 k = 1 ~ 5 之偏差與變異權衡，精準定位 <strong>k=2 最佳甜蜜點</strong> 與 <strong>k=5 深度過擬合懸崖</strong>。
-        </p>
-        <div class="hero-badges-row">
-          <span class="hero-pill"><i class="fa-solid fa-database"></i> 50 Startups Benchmark</span>
-          <span class="hero-pill sweet-spot-pill"><i class="fa-solid fa-award"></i> 全域最佳甜蜜點: k=2 (最低 RMSE $8,198.80)</span>
-          <span class="hero-pill cliff-pill"><i class="fa-solid fa-triangle-exclamation"></i> 過擬合懸崖: k=5 (RMSE 激增至 $9,137.99)</span>
-          <span class="hero-pill"><i class="fa-solid fa-bolt"></i> 研發支出 (R&D) 占整體獲利解釋力 > 94.6%</span>
+        <div class="stand-stat-box">
+          <div class="stat-label">速度 (Speed)</div>
+          <div class="stat-rank">A</div>
+          <div class="stat-sub">Lasso L1 瞬間收斂</div>
+        </div>
+        <div class="stand-stat-box">
+          <div class="stat-label">射程距離 (Range)</div>
+          <div class="stat-rank">B</div>
+          <div class="stat-sub">全美 3 州跨界涵蓋</div>
+        </div>
+        <div class="stand-stat-box">
+          <div class="stat-label">持續力 (Stay)</div>
+          <div class="stat-rank">A</div>
+          <div class="stat-sub">k=2 樣本外強韌泛化</div>
+        </div>
+        <div class="stand-stat-box">
+          <div class="stat-label">精密動作性 (Precision)</div>
+          <div class="stat-rank">A</div>
+          <div class="stat-sub">R² ≈ 0.92 奈米級擬合</div>
+        </div>
+        <div class="stand-stat-box">
+          <div class="stat-label">成長性 (Growth)</div>
+          <div class="stat-rank">E</div>
+          <div class="stat-sub">已抵達奧坎全域極致</div>
         </div>
       </div>
     </div>
 
     <!-- Control Center Deck -->
-    <div class="control-deck">
-      <div class="deck-header">
-        <div class="deck-title">
-          <i class="fa-solid fa-sliders"></i> 第一步：選擇特徵選取演算法 (Feature Selection Algorithm)
-        </div>
-        <span style="font-size: 12px; color: var(--text-dim);">支援單一演算法深入探勘或 5 大模型同屏比較</span>
+    <div class="jojo-deck">
+      <div class="jojo-section-title">
+        <i class="fa-solid fa-hand-fist"></i> 召喚特徵選擇替身使者 (CHOOSE YOUR STAND ALGORITHM)
       </div>
 
-      <div class="algo-tabs-grid" id="algoTabs">
-        <button class="algo-tab-btn active" data-algo="Lasso">
-          <div class="algo-name"><i class="fa-solid fa-filter" style="color: var(--primary);"></i> Lasso (L1)</div>
-          <div class="algo-sub">標準化係數絕對值排序</div>
-        </button>
-        <button class="algo-tab-btn" data-algo="Forward SFS">
-          <div class="algo-name"><i class="fa-solid fa-arrow-trend-up" style="color: var(--amber);"></i> Forward SFS</div>
-          <div class="algo-sub">貪婪前向逐步迴歸</div>
-        </button>
-        <button class="algo-tab-btn" data-algo="RFE">
-          <div class="algo-name"><i class="fa-solid fa-scissors" style="color: var(--emerald);"></i> RFE 遞歸消除</div>
-          <div class="algo-sub">後向迭代修剪最弱特徵</div>
-        </button>
-        <button class="algo-tab-btn" data-algo="ElasticNet">
-          <div class="algo-name"><i class="fa-solid fa-diagram-project" style="color: var(--rose);"></i> ElasticNet</div>
-          <div class="algo-sub">L1 稀疏性 + L2 穩定性</div>
-        </button>
-        <button class="algo-tab-btn" data-algo="Exhaustive">
-          <div class="algo-name"><i class="fa-solid fa-magnifying-glass-chart" style="color: var(--purple);"></i> Exhaustive 窮舉</div>
-          <div class="algo-sub">全子集最佳化組合搜尋</div>
-        </button>
-        <button class="algo-tab-btn" data-algo="ALL" style="border-left: 2px solid var(--cyan);">
-          <div class="algo-name"><i class="fa-solid fa-layer-group" style="color: var(--cyan);"></i> 🌟 5 大模型綜合評比</div>
-          <div class="algo-sub">同屏疊加趨勢線比較</div>
-        </button>
+      <div class="algo-grid-jojo" id="algoTabs">
+        <div class="jojo-algo-btn active" data-algo="Lasso">
+          <div class="algo-title-main"><i class="fa-solid fa-filter" style="color: var(--jojo-gold);"></i> Lasso (L1)</div>
+          <div class="algo-stand-codename">『白金之星・流星指刺』</div>
+        </div>
+        <div class="jojo-algo-btn" data-algo="Forward SFS">
+          <div class="algo-title-main"><i class="fa-solid fa-arrow-trend-up" style="color: var(--jojo-cyan);"></i> Forward SFS</div>
+          <div class="algo-stand-codename">『黃金體驗・生命賦予』</div>
+        </div>
+        <div class="jojo-algo-btn" data-algo="RFE">
+          <div class="algo-title-main"><i class="fa-solid fa-scissors" style="color: #34d399;"></i> RFE 遞歸消除</div>
+          <div class="algo-stand-codename">『轟炸空間・特徵削去』</div>
+        </div>
+        <div class="jojo-algo-btn" data-algo="ElasticNet">
+          <div class="algo-title-main"><i class="fa-solid fa-diagram-project" style="color: var(--jojo-pink);"></i> ElasticNet</div>
+          <div class="algo-stand-codename">『鋼鏈手指・彈性拉鍊』</div>
+        </div>
+        <div class="jojo-algo-btn" data-algo="Exhaustive">
+          <div class="algo-title-main"><i class="fa-solid fa-magnifying-glass-chart" style="color: #c084fc;"></i> Exhaustive 窮舉</div>
+          <div class="algo-stand-codename">『天國製造・加速遍歷』</div>
+        </div>
+        <div class="jojo-algo-btn" data-algo="ALL" style="border-left: 4px solid var(--jojo-cyan);">
+          <div class="algo-title-main"><i class="fa-solid fa-layer-group" style="color: var(--jojo-cyan);"></i> 🌟 5 大替身同屏大亂鬥</div>
+          <div class="algo-stand-codename">『全替身趨勢交鋒對決』</div>
+        </div>
       </div>
 
-      <!-- Interactive k-Feature Stepper -->
-      <div class="k-slider-block">
-        <div class="deck-title" style="margin-bottom: 12px; color: var(--text-muted);">
-          <i class="fa-solid fa-list-ol"></i> 第二步：特徵數量階梯 (Number of Predictors, k = 1 ~ 5)
+      <!-- k-Feature Stepper -->
+      <div class="k-stepper-jojo-box">
+        <div class="jojo-section-title" style="margin-bottom: 12px; font-size: 13px;">
+          <i class="fa-solid fa-stairs"></i> 自變數數量階梯 (NUMBER OF PREDICTORS: K = 1 ~ 5)
         </div>
-        <div class="k-stepper-row" id="kStepper">
-          <div class="k-node" data-k="1">
-            <div class="k-num">k = 1</div>
-            <div class="k-label">單一核心 (R&D Spend)</div>
+        <div class="k-nodes-grid" id="kStepper">
+          <div class="k-jojo-node active" data-k="1">
+            <div class="k-title-big">k = 1</div>
+            <div class="k-desc-sub">單一核心 (R&D) ★ 最低 RMSE</div>
           </div>
-          <div class="k-node sweet-spot active" data-k="2">
-            <span class="k-badge-corner badge-sweet">★ 最佳甜蜜點</span>
-            <div class="k-num" style="color: #34d399;">k = 2</div>
-            <div class="k-label">R&D + Marketing (最低 RMSE)</div>
+          <div class="k-jojo-node sweet-spot" data-k="2">
+            <div class="k-title-big" style="color: #34d399;">k = 2</div>
+            <div class="k-desc-sub">R&D + Marketing 雙強</div>
           </div>
-          <div class="k-node" data-k="3">
-            <div class="k-num">k = 3</div>
-            <div class="k-label">+ 行政支出 / 地理州別</div>
+          <div class="k-jojo-node" data-k="3">
+            <div class="k-title-big">k = 3</div>
+            <div class="k-desc-sub">+ 行政管理支出</div>
           </div>
-          <div class="k-node" data-k="4">
-            <div class="k-num">k = 4</div>
-            <div class="k-label">4 項自變數組合</div>
+          <div class="k-jojo-node" data-k="4">
+            <div class="k-title-big">k = 4</div>
+            <div class="k-desc-sub">四項自變數編隊</div>
           </div>
-          <div class="k-node cliff" data-k="5">
-            <span class="k-badge-corner badge-cliff">⚠ 過擬合</span>
-            <div class="k-num" style="color: #fbbf24;">k = 5</div>
-            <div class="k-label">全自變數 (引入噪聲與共線性)</div>
+          <div class="k-jojo-node cliff" data-k="5">
+            <div class="k-title-big" style="color: #f43f5e;">k = 5</div>
+            <div class="k-desc-sub">⚠ 敗者食塵 (過擬合崩潰)</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Real-Time Model KPIs Ribbon -->
-    <div class="metrics-grid">
-      <div class="kpi-card highlight-card">
-        <div class="kpi-head">
-          <span class="kpi-title">測試集 RMSE (均方根誤差)</span>
-          <span class="kpi-pill pill-green" id="kpiRmseBadge"><i class="fa-solid fa-award"></i> 最佳極小值</span>
+    <!-- JoJo Metrics Ribbon -->
+    <div class="jojo-metrics-grid">
+      <div class="jojo-kpi-card sweet-card">
+        <div class="kpi-jojo-head">
+          <span class="kpi-jojo-title">測試集 RMSE 均方根誤差</span>
+          <span class="kpi-badge-gold" id="kpiRmseBadge">黃金極小值</span>
         </div>
-        <div class="kpi-val" id="kpiRMSE">$8,198.80</div>
-        <div class="kpi-foot">
-          <i class="fa-solid fa-arrow-down" style="color: var(--emerald);"></i>
-          <span>數值愈低愈佳，k=2 達到全域最小預測誤差</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-head">
-          <span class="kpi-title">決定係數 (R² Score)</span>
-          <span class="kpi-pill pill-blue"><i class="fa-solid fa-circle-check"></i> 高擬合優度</span>
-        </div>
-        <div class="kpi-val" id="kpiR2">0.9474</div>
-        <div class="kpi-foot">
-          <i class="fa-solid fa-chart-line" style="color: var(--cyan);"></i>
-          <span>模型成功解釋了高達 94.74% 的獲利變異</span>
+        <div class="kpi-jojo-val" id="kpiRMSE">$7,714.33</div>
+        <div class="kpi-jojo-foot">
+          <i class="fa-solid fa-sparkles" style="color: var(--jojo-gold);"></i> 預測偏誤極低，奧坎剃刀制霸全場！
         </div>
       </div>
 
-      <div class="kpi-card">
-        <div class="kpi-head">
-          <span class="kpi-title">調整後決定係數 (Adj. R²)</span>
-          <span class="kpi-pill pill-blue">懲罰自變數</span>
+      <div class="jojo-kpi-card">
+        <div class="kpi-jojo-head">
+          <span class="kpi-jojo-title">決定係數 R² 擬合優度</span>
+          <span class="kpi-badge-pink">A 級精密動作</span>
         </div>
-        <div class="kpi-val" id="kpiAdjR2">0.9324</div>
-        <div class="kpi-foot">
-          <i class="fa-solid fa-scale-balanced" style="color: var(--text-dim);"></i>
-          <span>考量自由度後的淨模型解釋力</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-head">
-          <span class="kpi-title">平均絕對誤差 (MAE)</span>
-          <span class="kpi-pill pill-green">平均偏誤</span>
-        </div>
-        <div class="kpi-val" id="kpiMAE">$6,488.75</div>
-        <div class="kpi-foot">
-          <i class="fa-solid fa-calculator" style="color: var(--text-dim);"></i>
-          <span>樣本外測試集之實際金額平均偏差</span>
+        <div class="kpi-jojo-val" id="kpiR2">0.9265</div>
+        <div class="kpi-jojo-foot">
+          <i class="fa-solid fa-fire" style="color: var(--jojo-magenta);"></i> 解釋高達 92.65% 之新創獲利變異！
         </div>
       </div>
 
-      <div class="kpi-card">
-        <div class="kpi-head">
-          <span class="kpi-title">F-統計量檢定 (F-Stat)</span>
-          <span class="kpi-pill pill-green">p &lt; 0.0001</span>
+      <div class="jojo-kpi-card">
+        <div class="kpi-jojo-head">
+          <span class="kpi-jojo-title">調整後 R² (懲罰自由度)</span>
+          <span class="kpi-badge-gold">泛化指標</span>
         </div>
-        <div class="kpi-val" id="kpiFStat">347.8</div>
-        <div class="kpi-foot">
-          <i class="fa-solid fa-shield-halved" style="color: var(--emerald);"></i>
-          <span>迴歸方程式具備極高統計顯著性 (***)</span>
+        <div class="kpi-jojo-val" id="kpiAdjR2">0.9173</div>
+        <div class="kpi-jojo-foot">
+          <i class="fa-solid fa-scale-balanced"></i> 嚴懲冗餘變數，保留真正替身精華！
+        </div>
+      </div>
+
+      <div class="jojo-kpi-card">
+        <div class="kpi-jojo-head">
+          <span class="kpi-jojo-title">平均絕對誤差 (MAE)</span>
+          <span class="kpi-badge-gold">實質偏誤</span>
+        </div>
+        <div class="kpi-jojo-val" id="kpiMAE">$6,078.75</div>
+        <div class="kpi-jojo-foot">
+          <i class="fa-solid fa-calculator"></i> 測試集 10 家新創平均誤差僅數千元！
+        </div>
+      </div>
+
+      <div class="jojo-kpi-card">
+        <div class="kpi-jojo-head">
+          <span class="kpi-jojo-title">F 統計量檢定 (F-Stat)</span>
+          <span class="kpi-badge-pink">p &lt; 0.0001</span>
+        </div>
+        <div class="kpi-jojo-val" id="kpiFStat">349.0</div>
+        <div class="kpi-jojo-foot">
+          <i class="fa-solid fa-shield-halved"></i> 方程式達到極致統計顯著水準！
         </div>
       </div>
     </div>
 
-    <!-- Active Predictors & Parsimony Chip Bar -->
-    <div class="active-predictors-bar">
-      <div class="chips-group">
-        <span class="chips-label">
-          <i class="fa-solid fa-check-double" style="color: var(--primary);"></i> 當前啟用自變數 (<span id="featuresCount" style="color: white;">2</span> 項):
+    <!-- Active Predictors Chip Banner -->
+    <div class="active-chips-banner">
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <span style="font-size: 13px; font-weight: 800; color: #ffd700;">
+          <i class="fa-solid fa-check-double"></i> 當前出戰特徵 (<span id="featuresCount">1</span> 項):
         </span>
         <div id="featuresListChips" style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <span class="feature-chip-visual">R&D Spend</span>
-          <span class="feature-chip-visual">Marketing Spend</span>
+          <span class="chip-jojo">R&D Spend</span>
         </div>
       </div>
-      <div id="parsimonyNotice" class="parsimony-banner pill-green">
-        <i class="fa-solid fa-star"></i> 奧坎剃刀原則：2 特徵模型以最簡架構達到全域最低樣本外誤差。
+      <div id="parsimonyNotice" style="font-size: 12.5px; font-weight: 700; color: #34d399;">
+        『這就是覺醒的力量！單一核心研發支出便主宰了戰局！』
       </div>
     </div>
 
-    <!-- Dual Interactive Comparison Charts -->
+    <!-- Dual JoJo Charts Section -->
     <div class="dual-charts-grid">
-      <!-- Left Chart: RMSE -->
-      <div class="chart-card">
-        <div class="chart-card-header">
+      <!-- Left: RMSE -->
+      <div class="jojo-chart-card">
+        <div class="chart-header-jojo">
           <div class="chart-title-group">
-            <h3><i class="fa-solid fa-chart-line" style="color: var(--cyan);"></i> 特徵數與 RMSE 誤差曲線</h3>
-            <div class="chart-subtitle">數值愈低愈佳。觀察 k=2 處之深 V 谷底與 k=5 之誤差反彈。</div>
+            <h3><i class="fa-solid fa-chart-line" style="color: var(--jojo-gold);"></i> 特徵數與 RMSE 誤差曲線</h3>
+            <div class="chart-subtitle-jojo">觀察誤差走勢：低特徵數達到極小值，全特徵數反彈上升！</div>
           </div>
-          <span class="kpi-pill pill-blue" id="rmseChartBadge">Lasso (L1)</span>
+          <span class="kpi-badge-gold" id="rmseChartBadge">Lasso (L1)</span>
         </div>
         <div class="chart-box">
           <canvas id="rmseChart"></canvas>
         </div>
       </div>
 
-      <!-- Right Chart: R2 -->
-      <div class="chart-card">
-        <div class="chart-card-header">
+      <!-- Right: R2 -->
+      <div class="jojo-chart-card">
+        <div class="chart-header-jojo">
           <div class="chart-title-group">
-            <h3><i class="fa-solid fa-arrow-trend-up" style="color: var(--emerald);"></i> 特徵數與 R² 擬合優度曲線</h3>
-            <div class="chart-subtitle">數值愈高愈佳。峰值出現在 k=2 (0.9474)，全模型 k=5 出現退化。</div>
+            <h3><i class="fa-solid fa-arrow-trend-up" style="color: var(--jojo-cyan);"></i> 特徵數與 R² 擬合優度曲線</h3>
+            <div class="chart-subtitle-jojo">擬合優度峰值出現在精簡模型，k=5 出現過擬合衰退！</div>
           </div>
-          <span class="kpi-pill pill-green" id="r2ChartBadge">峰值在 k=2</span>
+          <span class="kpi-badge-pink" id="r2ChartBadge">精密動作性</span>
         </div>
         <div class="chart-box">
           <canvas id="r2Chart"></canvas>
@@ -1377,33 +1251,33 @@
       </div>
     </div>
 
-    <!-- Visual Mathematical Equation Terminal Card -->
-    <div class="equation-terminal">
-      <div class="eq-header">
-        <div class="eq-title">
-          <i class="fa-solid fa-square-root-variable"></i> 即時迴歸方程式 (Fitted OLS Mathematical Equation)
+    <!-- JoJo Fitted Equation Card -->
+    <div class="jojo-equation-card">
+      <div class="eq-header-jojo">
+        <div class="eq-title-jojo">
+          <i class="fa-solid fa-scroll"></i> 獲利白金之迴歸奧義 (FITTED OLS STAND FORMULA)
         </div>
-        <span style="font-size: 11px; color: #a5b4fc; font-family: 'JetBrains Mono';">動態隨自變數切換更新</span>
+        <span style="font-size: 11px; color: #fde047; font-family: 'JetBrains Mono';">動態隨自變數切換更新</span>
       </div>
-      <div class="eq-formula-box" id="equationBox">
-        Profit = 44,050.85 + 0.825 × (R&D Spend) + 0.024 × (Marketing Spend)
+      <div class="eq-code-box" id="equationBox">
+        Profit = 49,032.90 + 0.854 × (R&D Spend)
       </div>
     </div>
 
-    <!-- Studio Grid: Coefficients Table vs Live Interactive Simulator -->
-    <div class="studio-grid">
+    <!-- Studio Grid: Coefficients Table vs THE WORLD Simulator -->
+    <div class="studio-grid-jojo">
       
-      <!-- Left: StatsUnlock Style Coefficients & VIF Table -->
-      <div class="studio-card">
-        <div class="chart-card-header">
+      <!-- Left: Coefficients Table -->
+      <div class="studio-box-jojo">
+        <div class="chart-header-jojo">
           <div class="chart-title-group">
-            <h3><i class="fa-solid fa-table" style="color: var(--primary);"></i> 迴歸係數與統計推論檢定 (Coefficients & VIF)</h3>
-            <div class="chart-subtitle">包含估計值 (β)、標準誤、t 統計量、p 值、95% 信賴區間與共線性 VIF。</div>
+            <h3><i class="fa-solid fa-table" style="color: var(--jojo-gold);"></i> 替身係數與統計推論檢定 (Coefficients & VIF)</h3>
+            <div class="chart-subtitle-jojo">包含估計值 (β)、標準誤、t 統計量、p 值、95% 信賴區間與共線性 VIF。</div>
           </div>
         </div>
 
-        <div class="table-container">
-          <table class="modern-table">
+        <div class="jojo-table-wrap">
+          <table class="jojo-table">
             <thead>
               <tr>
                 <th>自變數 (Predictor)</th>
@@ -1422,74 +1296,73 @@
         </div>
       </div>
 
-      <!-- Right: Live Profit Predictor Simulator Studio -->
-      <div class="studio-card">
-        <div class="chart-card-header">
+      <!-- Right: THE WORLD Live Stand Predictor -->
+      <div class="studio-box-jojo">
+        <div class="chart-header-jojo">
           <div class="chart-title-group">
-            <h3><i class="fa-solid fa-calculator" style="color: var(--emerald);"></i> 新創獲利推論模擬器 (Live Predictor)</h3>
-            <div class="chart-subtitle">動態拉動自變數滑桿，即時解析各項支出對利潤的邊際貢獻。</div>
+            <h3><i class="fa-solid fa-clock" style="color: var(--jojo-cyan);"></i> 世界 (THE WORLD) 獲利推論器</h3>
+            <div class="chart-subtitle-jojo">時間停止！即時拆解各項支出對利潤的邊際貢獻！</div>
           </div>
         </div>
 
-        <div class="simulator-box">
-          <!-- Quick Preset Buttons -->
-          <div class="scenario-presets">
-            <span style="font-size: 11px; color: var(--text-dim); display: flex; align-items: center;">快捷情境：</span>
-            <button class="scenario-btn" onclick="applyPreset(160000, 130000, 300000, 'California')">🔥 測試案例 (高技術型)</button>
-            <button class="scenario-btn" onclick="applyPreset(70000, 120000, 200000, 'New York')">📊 平均型新創</button>
-            <button class="scenario-btn" onclick="applyPreset(10000, 80000, 450000, 'Florida')">🚀 行銷導向型</button>
-          </div>
+        <!-- Presets -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
+          <button class="jojo-btn" style="padding: 4px 10px; font-size: 11px;" onclick="applyPreset(160000, 130000, 300000, 'California')">🔥 測試案例 (高技術型)</button>
+          <button class="jojo-btn" style="padding: 4px 10px; font-size: 11px;" onclick="applyPreset(70000, 120000, 200000, 'New York')">📊 平均型新創</button>
+          <button class="jojo-btn" style="padding: 4px 10px; font-size: 11px;" onclick="applyPreset(10000, 80000, 450000, 'Florida')">🚀 行銷導向型</button>
+        </div>
 
-          <!-- R&D Spend Slider -->
-          <div class="sim-input-row">
-            <div class="sim-label-bar">
-              <span class="sim-label-name"><i class="fa-solid fa-microchip" style="color: var(--cyan);"></i> 研發支出 (R&D Spend)</span>
-              <span class="sim-label-val" id="labelRD">$160,000</span>
+        <!-- R&D Spend Slider -->
+        <div class="sim-slider-row">
+          <div class="sim-label-line">
+            <span class="sim-feature-title"><i class="fa-solid fa-microchip" style="color: var(--jojo-gold);"></i> 研發支出 (R&D Spend)</span>
+            <span class="sim-val-number" id="labelRD">$160,000</span>
+          </div>
+          <input type="range" id="rangeRD" class="jojo-slider" value="160000" min="0" max="250000" step="5000">
+        </div>
+
+        <!-- Marketing Spend Slider -->
+        <div class="sim-slider-row">
+          <div class="sim-label-line">
+            <span class="sim-feature-title"><i class="fa-solid fa-bullhorn" style="color: var(--jojo-cyan);"></i> 行銷支出 (Marketing Spend)</span>
+            <span class="sim-val-number" id="labelMkt">$300,000</span>
+          </div>
+          <input type="range" id="rangeMkt" class="jojo-slider" value="300000" min="0" max="500000" step="5000">
+        </div>
+
+        <!-- Administration Spend Slider -->
+        <div class="sim-slider-row">
+          <div class="sim-label-line">
+            <span class="sim-feature-title"><i class="fa-solid fa-building-user" style="color: var(--jojo-pink);"></i> 行政支出 (Administration)</span>
+            <span class="sim-val-number" id="labelAdmin">$130,000</span>
+          </div>
+          <input type="range" id="rangeAdmin" class="jojo-slider" value="130000" min="0" max="250000" step="5000">
+        </div>
+
+        <!-- State Dropdown -->
+        <div class="sim-slider-row">
+          <div class="sim-label-line">
+            <span class="sim-feature-title"><i class="fa-solid fa-location-dot" style="color: #ffd700;"></i> 公司所在州別 (State Location)</span>
+          </div>
+          <select id="selectState" class="jojo-select">
+            <option value="California">California 加州 (基準類別)</option>
+            <option value="New York">New York 紐約州</option>
+            <option value="Florida">Florida 佛羅里達州</option>
+          </select>
+        </div>
+
+        <!-- THE WORLD Output Box -->
+        <div class="the-world-box">
+          <div class="world-stand-label">『THE WORLD! TIME HAS STOPPED!』預估淨獲利總金額</div>
+          <div class="world-amount" id="predProfitOutput">$182,943.06</div>
+
+          <!-- Breakdown Waterfall -->
+          <div class="waterfall-jojo-box">
+            <div style="font-size: 11px; font-weight: 800; color: #ffd700; margin-bottom: 8px;">
+              <i class="fa-solid fa-water"></i> 替身各要素貢獻瀑布拆解 (CONTRIBUTION WATERFALL):
             </div>
-            <input type="range" id="rangeRD" class="sim-range" value="160000" min="0" max="250000" step="5000">
-          </div>
-
-          <!-- Marketing Spend Slider -->
-          <div class="sim-input-row">
-            <div class="sim-label-bar">
-              <span class="sim-label-name"><i class="fa-solid fa-bullhorn" style="color: var(--amber);"></i> 行銷支出 (Marketing Spend)</span>
-              <span class="sim-label-val" id="labelMkt">$300,000</span>
-            </div>
-            <input type="range" id="rangeMkt" class="sim-range" value="300000" min="0" max="500000" step="5000">
-          </div>
-
-          <!-- Administration Spend Slider -->
-          <div class="sim-input-row" id="rowAdmin">
-            <div class="sim-label-bar">
-              <span class="sim-label-name"><i class="fa-solid fa-building-user" style="color: var(--primary);"></i> 行政管理支出 (Administration)</span>
-              <span class="sim-label-val" id="labelAdmin">$130,000</span>
-            </div>
-            <input type="range" id="rangeAdmin" class="sim-range" value="130000" min="0" max="250000" step="5000">
-          </div>
-
-          <!-- State Dropdown -->
-          <div class="sim-input-row" id="rowState">
-            <div class="sim-label-bar">
-              <span class="sim-label-name"><i class="fa-solid fa-location-dot" style="color: var(--rose);"></i> 公司所在州別 (State Location)</span>
-            </div>
-            <select id="selectState" class="sim-select">
-              <option value="California">California 加州 (基準類別)</option>
-              <option value="New York">New York 紐約州</option>
-              <option value="Florida">Florida 佛羅里達州</option>
-            </select>
-          </div>
-
-          <!-- Visual Prediction Box -->
-          <div class="prediction-hero-box">
-            <div class="pred-hero-label">預估年度獲利總金額 (Predicted Net Profit)</div>
-            <div class="pred-hero-val" id="predProfitOutput">$182,298.25</div>
-
-            <!-- Contribution Breakdown Progress -->
-            <div class="breakdown-box">
-              <div class="breakdown-title">各項要素實質貢獻拆解 (Contribution Waterfall)</div>
-              <div id="breakdownContainer">
-                <!-- Dynamically populated -->
-              </div>
+            <div id="breakdownContainer">
+              <!-- Dynamically populated -->
             </div>
           </div>
         </div>
@@ -1497,18 +1370,18 @@
 
     </div>
 
-    <!-- Test Set Residual Diagnostics & Outliers -->
-    <div class="diagnostics-card">
-      <div class="chart-card-header">
+    <!-- Outliers & Residuals Section -->
+    <div class="outliers-jojo-box">
+      <div class="chart-header-jojo">
         <div class="chart-title-group">
-          <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--amber);"></i> 樣本外測試集殘差與離群值診斷 (Residuals & Outliers)</h3>
-          <div class="chart-subtitle">評估 10 家獨立測試集新創公司的實際獲利 vs 預測獲利之絕對誤差與百分比偏誤。</div>
+          <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--jojo-gold);"></i> 測試集殘差與離群值診斷 (10 Startups Diagnostics)</h3>
+          <div class="chart-subtitle-jojo">檢驗樣本外測試集 10 家新創公司的實際獲利 vs 預測獲利殘差偏差。</div>
         </div>
-        <span class="kpi-pill pill-blue"><i class="fa-solid fa-arrow-down-short-wide"></i> 依絕對殘差降冪排序</span>
+        <span class="kpi-badge-gold">殘差排序</span>
       </div>
 
-      <div class="table-container">
-        <table class="modern-table">
+      <div class="jojo-table-wrap">
+        <table class="jojo-table">
           <thead>
             <tr>
               <th>排行</th>
@@ -1518,7 +1391,7 @@
               <th>殘差金額 (Residual)</th>
               <th>絕對誤差 (MAE)</th>
               <th>偏誤百分比</th>
-              <th>診斷狀態評級</th>
+              <th>替身狀態診斷</th>
             </tr>
           </thead>
           <tbody id="outliersTableBody">
@@ -1530,43 +1403,43 @@
 
   </div>
 
-  <!-- Footer & References -->
+  <!-- JoJo Footer -->
   <footer>
     <div class="footer-inner">
       <div style="max-width: 600px;">
-        <h4 style="font-size: 16px; margin-bottom: 10px; color: white;">
-          <i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> 50 Startups CRISP-DM 資料科學與機器學習專案
+        <h4 style="font-family: 'Outfit'; font-size: 18px; color: var(--jojo-gold); margin-bottom: 8px;">
+          <i class="fa-solid fa-bolt"></i> 50 Startups：獲利白金與特徵選擇之奇妙冒險
         </h4>
-        <p style="font-size: 13px; color: #94a3b8; line-height: 1.7;">
-          本專案以 Python、Flask 與 Scikit-learn 實現完整 CRISP-DM 六大階段，結合格位化演算法選擇（Lasso、SFS、RFE、ElasticNet、Exhaustive Search），以奧坎剃刀原則驗證雙變數模型之泛化優勢。
+        <p style="font-size: 13px; color: #d8b4fe; line-height: 1.7;">
+          結合荒木飛呂彥 JoJo 奇妙美學、CRISP-DM 資料探勘標準與 5 大機器學習替身演算法，貫徹奧坎剃刀原則！
         </p>
       </div>
 
       <div style="max-width: 580px;">
-        <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 10px;">
-          學術引用與設計來源 (References)
+        <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--jojo-gold); margin-bottom: 8px;">
+          傳送門與致敬 (LINKS & REFERENCES)
         </h4>
-        <div class="ack-card">
-          • <strong>設計佈局參考</strong>：<a href="https://statsunlock.com/multiple-linear-regression-calculator/" target="_blank">StatsUnlock Multiple Linear Regression Calculator</a>。<br>
-          • <strong>標準資料集</strong>：<a href="https://raw.githubusercontent.com/Avik-Jain/100-Days-Of-ML-Code/master/datasets/50_Startups.csv" target="_blank">50 Startups Dataset (Avik Jain 100-Days-Of-ML)</a>。<br>
-          • <strong>GitHub 儲存庫</strong>：<a href="https://github.com/ryanlin19960221/AIoT-DIC2-MultipleLR" target="_blank">ryanlin19960221/AIoT-DIC2-MultipleLR</a>。
-        </div>
+        <p style="font-size: 13px; color: #e9d5ff; line-height: 1.7;">
+          • <strong>GitHub 專案倉庫</strong>：<a href="https://github.com/ryanlin19960221/AIoT-DIC2-MultipleLR" target="_blank" style="color: #ffd700; text-decoration: underline;">ryanlin19960221/AIoT-DIC2-MultipleLR</a><br>
+          • <strong>正式 DEMO 網址</strong>：<a href="https://ryanlin19960221.github.io/AIoT-DIC2-MultipleLR/" target="_blank" style="color: #00f0ff; text-decoration: underline;">https://ryanlin19960221.github.io/AIoT-DIC2-MultipleLR/</a><br>
+          • <strong>經典致敬</strong>：JoJo's Bizarre Adventure (荒木飛呂彥) & StatsUnlock Regression Calculator。
+        </p>
       </div>
     </div>
   </footer>
 
-  <!-- Application Logic -->
+  <!-- Script logic -->
   <script>
     let currentAlgo = 'Lasso';
-    let currentK = 2; // Default to optimal sweet spot
+    let currentK = 1; // Default to best RMSE in Seed 42
     let rmseChartInstance = null;
     let r2ChartInstance = null;
 
     const ALGO_COLORS = {
-      'Lasso': '#6366f1',
-      'Forward SFS': '#f59e0b',
+      'Lasso': '#ffd700',
+      'Forward SFS': '#00f0ff',
       'RFE': '#10b981',
-      'ElasticNet': '#f43f5e',
+      'ElasticNet': '#ff007f',
       'Exhaustive': '#a855f7'
     };
 
@@ -1577,8 +1450,8 @@
     });
 
     function setupEventListeners() {
-      // Algorithm tabs
-      const tabs = document.querySelectorAll('#algoTabs .algo-tab-btn');
+      // Algo tab buttons
+      const tabs = document.querySelectorAll('#algoTabs .jojo-algo-btn');
       tabs.forEach(btn => {
         btn.addEventListener('click', () => {
           tabs.forEach(b => b.classList.remove('active'));
@@ -1588,8 +1461,8 @@
         });
       });
 
-      // Feature count stepper buttons
-      const kNodes = document.querySelectorAll('#kStepper .k-node');
+      // k-stepper
+      const kNodes = document.querySelectorAll('#kStepper .k-jojo-node');
       kNodes.forEach(node => {
         node.addEventListener('click', () => {
           kNodes.forEach(n => n.classList.remove('active'));
@@ -1599,7 +1472,7 @@
         });
       });
 
-      // Sliders & inputs synchronization
+      // Sliders
       const setupSlider = (sliderId, labelId) => {
         const slider = document.getElementById(sliderId);
         const label = document.getElementById(labelId);
@@ -1637,23 +1510,22 @@
       const data = getActiveModelData();
       if (!data) return;
 
-      // Update KPI Cards
+      // Update KPI
       document.getElementById('kpiRMSE').textContent = '$' + data.rmse.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('kpiR2').textContent = data.r2.toFixed(4);
-      document.getElementById('kpiAdjR2').textContent = data.adj_r2 ? data.adj_r2.toFixed(4) : '0.9324';
+      document.getElementById('kpiAdjR2').textContent = data.adj_r2 ? data.adj_r2.toFixed(4) : '0.9173';
       document.getElementById('kpiMAE').textContent = '$' + data.mae.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      document.getElementById('kpiFStat').textContent = data.f_stat ? data.f_stat.toFixed(1) : '347.8';
+      document.getElementById('kpiFStat').textContent = data.f_stat ? data.f_stat.toFixed(1) : '349.0';
 
-      // Badge status
       const rmseBadge = document.getElementById('kpiRmseBadge');
-      if (currentK === 2) {
-        rmseBadge.className = 'kpi-pill pill-green';
-        rmseBadge.innerHTML = '<i class="fa-solid fa-award"></i> 最佳極小值';
+      if (currentK <= 2) {
+        rmseBadge.className = 'kpi-badge-gold';
+        rmseBadge.innerHTML = '黃金極小值';
       } else if (currentK === 5) {
-        rmseBadge.className = 'kpi-pill pill-amber';
-        rmseBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 過擬合反彈';
+        rmseBadge.className = 'kpi-badge-pink';
+        rmseBadge.innerHTML = '⚠ 敗者食塵反彈';
       } else {
-        rmseBadge.className = 'kpi-pill pill-blue';
+        rmseBadge.className = 'kpi-badge-gold';
         rmseBadge.innerHTML = `k = ${currentK}`;
       }
 
@@ -1663,25 +1535,24 @@
       chipsContainer.innerHTML = '';
       data.features.forEach(feat => {
         const chip = document.createElement('span');
-        chip.className = 'feature-chip-visual';
-        chip.innerHTML = `<i class="fa-solid fa-check" style="font-size: 10px;"></i> ${feat}`;
+        chip.className = 'chip-jojo';
+        chip.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i> ${feat}`;
         chipsContainer.appendChild(chip);
       });
 
       // Parsimony notice
       const notice = document.getElementById('parsimonyNotice');
-      if (currentK === 2) {
-        notice.className = 'parsimony-banner pill-green';
-        notice.innerHTML = '<i class="fa-solid fa-star"></i> 奧坎剃刀原則：2 特徵模型達全域最低 RMSE ($8,198.80) 與最高 R² (0.9474)。';
+      if (currentK <= 2) {
+        notice.style.color = '#34d399';
+        notice.innerHTML = '『這就是覺醒的力量！奧坎剃刀以極簡自變數擊敗全特徵模型！』';
       } else if (currentK === 5) {
-        notice.className = 'parsimony-banner pill-amber';
-        notice.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 過擬合警告：加入行政費與州別產生噪聲，測試集誤差急遽惡化至 $9,137.99！';
+        notice.style.color = '#f43f5e';
+        notice.innerHTML = '『無駄無駄無駄！盲目添加行政與州別，噪聲爆炸觸發敗者食塵！』';
       } else {
-        notice.className = 'parsimony-banner pill-blue';
-        notice.innerHTML = `<i class="fa-solid fa-circle-info"></i> 當前模型共採用 ${currentK} 項預測變數。`;
+        notice.style.color = '#fbbf24';
+        notice.innerHTML = `『當前替身已出動 ${currentK} 項預測要素！』`;
       }
 
-      // Update Subsections
       updateEquation(data.coefficients);
       updateCoefficientsTable(data.coefficients);
       updateOutliersTable(data.outliers);
@@ -1695,17 +1566,17 @@
       let parts = [];
 
       if (intercept) {
-        parts.push(`<span class="eq-intercept">${intercept.coef.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`);
+        parts.push(`<span class="eq-num">${intercept.coef.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`);
       }
 
       coefficients.forEach(c => {
         if (c.feature.includes('Intercept')) return;
-        const sign = c.coef >= 0 ? '<span class="eq-plus">+</span>' : '<span class="eq-minus">-</span>';
+        const sign = c.coef >= 0 ? '<span class="eq-sign">+</span>' : '<span class="eq-sign">-</span>';
         const absVal = Math.abs(c.coef).toFixed(4);
-        parts.push(`${sign} ${absVal} × <span class="eq-var">(${c.feature})</span>`);
+        parts.push(`${sign} <span class="eq-num">${absVal}</span> × <span class="eq-feature">(${c.feature})</span>`);
       });
 
-      box.innerHTML = `<strong style="color: white;">Profit</strong> = ${parts.join(' ')}`;
+      box.innerHTML = `<strong style="color: #ffd700;">Profit</strong> = ${parts.join(' ')}`;
     }
 
     function updateCoefficientsTable(coefficients) {
@@ -1715,33 +1586,33 @@
       coefficients.forEach(c => {
         const tr = document.createElement('tr');
         const isIntercept = c.feature.includes('Intercept');
-        
-        let pBadge = c.pvalue < 0.05 
-          ? `<span class="kpi-pill pill-green">${c.pvalue < 0.0001 ? '< 0.0001' : c.pvalue.toFixed(4)} ***</span>`
-          : `<span class="kpi-pill pill-amber">${c.pvalue.toFixed(4)} (不顯著)</span>`;
 
-        let vifContent = '<span style="color: var(--text-dim);">-</span>';
+        let pBadge = c.pvalue < 0.05 
+          ? `<span style="color: #34d399; font-weight: 800;">${c.pvalue < 0.0001 ? '< 0.0001' : c.pvalue.toFixed(4)} ***</span>`
+          : `<span style="color: #f43f5e; font-weight: 700;">${c.pvalue.toFixed(4)} (無駄)</span>`;
+
+        let vifContent = '<span style="color: #6b21a8;">-</span>';
         if (!isIntercept && c.vif !== null) {
           const vifVal = c.vif;
           const isSafe = vifVal < 5;
-          const fillColor = isSafe ? '#10b981' : '#f59e0b';
+          const fillColor = isSafe ? '#34d399' : '#f59e0b';
           const fillWidth = Math.min(100, (vifVal / 10) * 100);
 
           vifContent = `
-            <span style="font-family: 'JetBrains Mono'; font-weight: 600; color: ${isSafe ? '#34d399' : '#fde68a'};">${vifVal.toFixed(2)}</span>
-            <div class="vif-gauge-bar">
-              <div class="vif-fill" style="width: ${fillWidth}%; background: ${fillColor};"></div>
+            <span style="font-family: 'JetBrains Mono'; font-weight: 800; color: ${isSafe ? '#34d399' : '#fde68a'};">${vifVal.toFixed(2)}</span>
+            <div class="vif-mini-bar">
+              <div class="vif-fill-bar" style="width: ${fillWidth}%; background: ${fillColor};"></div>
             </div>
           `;
         }
 
         tr.innerHTML = `
-          <td><strong style="color: white;">${c.feature}</strong></td>
-          <td style="font-family: 'JetBrains Mono'; font-weight: 700; color: #a5b4fc;">${c.coef.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}</td>
-          <td style="font-family: 'JetBrains Mono'; color: var(--text-muted);">${c.stderr.toFixed(4)}</td>
-          <td style="font-family: 'JetBrains Mono'; font-weight: 600;">${c.tstat.toFixed(3)}</td>
+          <td><strong style="color: #ffd700;">${c.feature}</strong></td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 800; color: #a5f3fc;">${c.coef.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}</td>
+          <td style="font-family: 'JetBrains Mono'; color: #c084fc;">${c.stderr.toFixed(4)}</td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 700;">${c.tstat.toFixed(3)}</td>
           <td>${pBadge}</td>
-          <td style="font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim);">[${c.ci_lower.toFixed(2)}, ${c.ci_upper.toFixed(2)}]</td>
+          <td style="font-family: 'JetBrains Mono'; font-size: 11px; color: #d8b4fe;">[${c.ci_lower.toFixed(2)}, ${c.ci_upper.toFixed(2)}]</td>
           <td>${vifContent}</td>
         `;
         tbody.appendChild(tr);
@@ -1766,7 +1637,7 @@
 
         if (c.feature.includes('Intercept')) {
           val = c.coef;
-          itemLabel = '基準常數項 (Intercept)';
+          itemLabel = '常數項 (Intercept)';
         } else if (c.feature === 'R&D Spend') {
           val = c.coef * rd;
         } else if (c.feature === 'Marketing Spend') {
@@ -1785,10 +1656,9 @@
 
       document.getElementById('predProfitOutput').textContent = '$' + totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      // Render Waterfall Breakdown Bars
+      // Render Waterfall breakdown
       const breakdownBox = document.getElementById('breakdownContainer');
       breakdownBox.innerHTML = '';
-      
       const maxVal = Math.max(...contributions.map(c => Math.abs(c.amount)), 1);
 
       contributions.forEach(item => {
@@ -1798,13 +1668,14 @@
         const sign = isPos ? '+' : '-';
 
         const row = document.createElement('div');
+        row.style.marginBottom = '6px';
         row.innerHTML = `
-          <div class="breakdown-item">
-            <span style="color: #e2e8f0;">${item.label}</span>
-            <span style="font-family: 'JetBrains Mono'; font-weight: 700; color: ${color};">${sign}$${Math.abs(item.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: #f3e8ff;">${item.label}</span>
+            <span style="font-family: 'JetBrains Mono'; font-weight: 800; color: ${color};">${sign}$${Math.abs(item.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
           </div>
-          <div class="breakdown-bar-wrap">
-            <div class="breakdown-bar-fill" style="width: ${pct}%; background: ${color};"></div>
+          <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-top: 2px;">
+            <div style="width: ${pct}%; height: 100%; background: ${color};"></div>
           </div>
         `;
         breakdownBox.appendChild(row);
@@ -1819,24 +1690,24 @@
         const tr = document.createElement('tr');
         const isHigh = o.abs_error > 10000;
         const statusBadge = isHigh 
-          ? `<span class="kpi-pill pill-amber"><i class="fa-solid fa-triangle-exclamation"></i> 高殘差標的</span>`
-          : `<span class="kpi-pill pill-green"><i class="fa-solid fa-check"></i> 預測極精準</span>`;
+          ? `<span style="color: #f59e0b; font-weight: 800;"><i class="fa-solid fa-triangle-exclamation"></i> 殘差偏高</span>`
+          : `<span style="color: #34d399; font-weight: 800;"><i class="fa-solid fa-check"></i> 精準命中</span>`;
 
         tr.innerHTML = `
-          <td style="font-weight: 800; color: var(--cyan);">#${o.rank}</td>
-          <td>新創公司 #${o.index}</td>
+          <td style="font-weight: 800; color: var(--jojo-gold);">#${o.rank}</td>
+          <td>新創 #${o.index}</td>
           <td style="font-family: 'JetBrains Mono'; color: #f8fafc;">$${o.actual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="font-family: 'JetBrains Mono'; color: #a5b4fc;">$${o.predicted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="font-family: 'JetBrains Mono'; font-weight: 700; color: ${o.residual >= 0 ? '#34d399' : '#f43f5e'};">${o.residual >= 0 ? '+' : ''}$${o.residual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="font-family: 'JetBrains Mono'; color: #a5f3fc;">$${o.predicted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 800; color: ${o.residual >= 0 ? '#34d399' : '#f43f5e'};">${o.residual >= 0 ? '+' : ''}$${o.residual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           <td style="font-family: 'JetBrains Mono';">$${o.abs_error.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="font-family: 'JetBrains Mono'; font-weight: 600;">${o.pct_error.toFixed(2)}%</td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 700;">${o.pct_error.toFixed(2)}%</td>
           <td>${statusBadge}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // Chart.js Setup with Futuristic Glowing Aesthetic
+    // Chart.js Setup with JoJo neon comic palette
     function initCharts() {
       const ctxRMSE = document.getElementById('rmseChart').getContext('2d');
       const ctxR2 = document.getElementById('r2Chart').getContext('2d');
@@ -1847,26 +1718,22 @@
         plugins: {
           legend: {
             display: false,
-            labels: {
-              color: '#94a3b8',
-              font: { family: 'Inter', size: 12, weight: 600 }
-            }
+            labels: { color: '#ffd700', font: { family: 'Outfit', size: 12, weight: 'bold' } }
           },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.94)',
-            titleFont: { family: 'Outfit', size: 14, weight: 700 },
-            bodyFont: { family: 'Inter', size: 12 },
-            borderColor: 'rgba(99, 102, 241, 0.3)',
-            borderWidth: 1,
-            padding: 14,
-            cornerRadius: 10,
-            boxPadding: 6,
+            backgroundColor: 'rgba(23, 4, 44, 0.95)',
+            titleFont: { family: 'Bangers', size: 16 },
+            bodyFont: { family: 'Noto Sans TC', size: 12 },
+            borderColor: '#ffd700',
+            borderWidth: 2,
+            padding: 12,
+            cornerRadius: 8,
             callbacks: {
               afterLabel: function(context) {
                 const k = context.dataIndex + 1;
                 const algo = currentAlgo === 'ALL' ? context.dataset.label : currentAlgo;
                 const modelItem = window.MODEL_DATA[algo][k - 1];
-                return '選入特徵: ' + modelItem.features.join(', ');
+                return '特徵陣容: ' + modelItem.features.join(', ');
               }
             }
           }
@@ -1875,23 +1742,23 @@
           x: {
             title: {
               display: true,
-              text: '選用特徵數 (k)',
-              color: '#94a3b8',
-              font: { family: 'Inter', weight: 600, size: 12 }
+              text: '自變數數量 (k)',
+              color: '#ffd700',
+              font: { family: 'Outfit', weight: 'bold', size: 12 }
             },
-            ticks: { color: '#64748b', font: { family: 'JetBrains Mono' } },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            ticks: { color: '#c084fc', font: { family: 'JetBrains Mono' } },
+            grid: { color: 'rgba(255, 215, 0, 0.08)' }
           },
           y: {
-            ticks: { color: '#64748b', font: { family: 'JetBrains Mono' } },
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            ticks: { color: '#c084fc', font: { family: 'JetBrains Mono' } },
+            grid: { color: 'rgba(255, 215, 0, 0.08)' }
           }
         },
         onClick: (e, elements) => {
           if (elements.length > 0) {
             const index = elements[0].index;
             const newK = index + 1;
-            const kNodes = document.querySelectorAll('#kStepper .k-node');
+            const kNodes = document.querySelectorAll('#kStepper .k-jojo-node');
             kNodes.forEach(node => {
               if (parseInt(node.dataset.k) === newK) {
                 node.click();
@@ -1903,7 +1770,7 @@
 
       rmseChartInstance = new Chart(ctxRMSE, {
         type: 'line',
-        data: { labels: ['1', '2', '3', '4', '5'], datasets: [] },
+        data: { labels: ['k=1', 'k=2', 'k=3', 'k=4', 'k=5'], datasets: [] },
         options: {
           ...commonOptions,
           scales: {
@@ -1913,8 +1780,8 @@
               title: {
                 display: true,
                 text: 'RMSE ($) (愈低愈佳)',
-                color: '#94a3b8',
-                font: { family: 'Inter', weight: 600, size: 12 }
+                color: '#ffd700',
+                font: { family: 'Outfit', weight: 'bold', size: 12 }
               }
             }
           }
@@ -1923,7 +1790,7 @@
 
       r2ChartInstance = new Chart(ctxR2, {
         type: 'line',
-        data: { labels: ['1', '2', '3', '4', '5'], datasets: [] },
+        data: { labels: ['k=1', 'k=2', 'k=3', 'k=4', 'k=5'], datasets: [] },
         options: {
           ...commonOptions,
           scales: {
@@ -1932,9 +1799,9 @@
               ...commonOptions.scales.y,
               title: {
                 display: true,
-                text: 'R² 決定係數 (愈高愈佳)',
-                color: '#94a3b8',
-                font: { family: 'Inter', weight: 600, size: 12 }
+                text: 'R² 擬合優度 (愈高愈佳)',
+                color: '#ffd700',
+                font: { family: 'Outfit', weight: 'bold', size: 12 }
               }
             }
           }
@@ -1944,8 +1811,8 @@
 
     function updateCharts() {
       const isCompareAll = currentAlgo === 'ALL';
-      document.getElementById('rmseChartBadge').textContent = isCompareAll ? '5 大模型同屏對比' : currentAlgo;
-      
+      document.getElementById('rmseChartBadge').textContent = isCompareAll ? '5 大替身大亂鬥' : currentAlgo;
+
       let datasetsRMSE = [];
       let datasetsR2 = [];
 
@@ -1957,22 +1824,22 @@
         const algoData = window.MODEL_DATA[algo];
         const rmsePoints = algoData.map(item => item.rmse);
         const r2Points = algoData.map(item => item.r2);
-        const color = ALGO_COLORS[algo] || '#6366f1';
+        const color = ALGO_COLORS[algo] || '#ffd700';
 
-        const pointRadii = algoData.map(item => item.k === currentK ? 8 : (item.k === 2 ? 6 : 4));
-        const pointColors = algoData.map(item => item.k === 2 ? '#10b981' : color);
+        const pointRadii = algoData.map(item => item.k === currentK ? 9 : 5);
+        const pointColors = algoData.map(item => item.k === currentK ? '#ffffff' : color);
 
         datasetsRMSE.push({
           label: algo,
           data: rmsePoints,
           borderColor: color,
-          backgroundColor: isCompareAll ? color : 'rgba(99, 102, 241, 0.08)',
+          backgroundColor: isCompareAll ? color : 'rgba(255, 215, 0, 0.08)',
           fill: !isCompareAll,
-          borderWidth: isCompareAll ? 2.2 : 3,
+          borderWidth: isCompareAll ? 2.5 : 3.5,
           tension: 0.25,
           pointRadius: pointRadii,
           pointBackgroundColor: pointColors,
-          pointBorderColor: '#ffffff',
+          pointBorderColor: '#000000',
           pointBorderWidth: 2
         });
 
@@ -1980,13 +1847,13 @@
           label: algo,
           data: r2Points,
           borderColor: color,
-          backgroundColor: isCompareAll ? color : 'rgba(16, 185, 129, 0.08)',
+          backgroundColor: isCompareAll ? color : 'rgba(0, 240, 255, 0.08)',
           fill: !isCompareAll,
-          borderWidth: isCompareAll ? 2.2 : 3,
+          borderWidth: isCompareAll ? 2.5 : 3.5,
           tension: 0.25,
           pointRadius: pointRadii,
           pointBackgroundColor: pointColors,
-          pointBorderColor: '#ffffff',
+          pointBorderColor: '#000000',
           pointBorderWidth: 2
         });
       });
@@ -1998,18 +1865,6 @@
       r2ChartInstance.data.datasets = datasetsR2;
       r2ChartInstance.options.plugins.legend.display = isCompareAll;
       r2ChartInstance.update();
-    }
-
-    function showCrispInfo(stage) {
-      const stages = {
-        1: "【Stage 1: 商業理解】新創投資決策核心：透過研發、行政、行銷支出及州別預測獲利，鎖定核心驅動引擎。",
-        2: "【Stage 2: 資料理解】分析 50 筆觀察值，驗證無缺失值，掌握特徵分配與統計量。",
-        3: "【Stage 3: 資料準備】One-Hot Encoding 消除州別之虛擬變數陷阱 (Dummy Variable Trap)，消除多重共線性。",
-        4: "【Stage 4: 建立模型】比較 LassoCV、Forward SFS、RFE、ElasticNetCV、Exhaustive Search 等 5 種特徵選擇演算法。",
-        5: "【Stage 5: 模型評估】落實奧坎剃刀原則：k=2 為樣本外誤差最低點 ($8,198)，k=5 出現嚴重過擬合。",
-        6: "【Stage 6: 部署推論】提供即時預測 API、要素邊際貢獻瀑布圖與序列化 .pkl 模型持久化。"
-      };
-      alert(stages[stage]);
     }
   </script>
 </body>
