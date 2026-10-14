@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>50 Startups: Multiple Linear Regression & Feature Selection Explorer</title>
+  <title>50 Startups: CRISP-DM 多元線性迴歸與特徵選擇互動儀表板</title>
   
-  <!-- Google Fonts: Outfit & Inter -->
+  <!-- Google Fonts: Outfit, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -21,35 +21,41 @@
 
   <style>
     :root {
-      --primary-dark: #343090;
-      --primary: #4f46e5;
-      --primary-light: #6366f1;
-      --primary-subtle: #eef2ff;
-      --accent-blue: #3b82f6;
-      --accent-emerald: #10b981;
-      --accent-emerald-subtle: #ecfdf5;
-      --accent-amber: #f59e0b;
-      --accent-amber-subtle: #fffbeb;
-      --accent-rose: #f43f5e;
-      --accent-rose-subtle: #fff1f2;
-      --slate-50: #f8fafc;
-      --slate-100: #f1f5f9;
-      --slate-200: #e2e8f0;
-      --slate-300: #cbd5e1;
-      --slate-400: #94a3b8;
-      --slate-500: #64748b;
-      --slate-600: #475569;
-      --slate-700: #334155;
-      --slate-800: #1e293b;
-      --slate-900: #0f172a;
+      /* Dark Modern Palette */
+      --bg-dark: #070913;
+      --bg-card: rgba(17, 24, 39, 0.72);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --bg-card-solid: #0f172a;
+      --bg-glass: rgba(255, 255, 255, 0.04);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.45);
+      
+      /* Vibrant Accents */
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.35);
+      --primary-light: #818cf8;
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.3);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.25);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.3);
+      --rose: #f43f5e;
+      --purple: #a855f7;
+      
+      /* Neutral Typography */
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
       --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 20px;
-      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-      --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.15);
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 1px 1px var(--border-subtle);
+      --shadow-glow: 0 0 25px var(--primary-glow);
+      --shadow-sweet: 0 0 30px var(--emerald-glow);
     }
 
     * {
@@ -60,39 +66,46 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--slate-50);
-      color: var(--slate-800);
-      line-height: 1.5;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 25%, rgba(16, 185, 129, 0.09) 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
 
     h1, h2, h3, h4, .font-heading {
       font-family: 'Outfit', sans-serif;
       font-weight: 700;
-      color: var(--slate-900);
+      letter-spacing: -0.02em;
     }
 
     .container {
-      max-width: 1380px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 24px 20px 60px;
+      padding: 24px 24px 80px;
     }
 
-    /* Top Breadcrumb & Header */
-    .top-header {
-      background: white;
-      border-bottom: 1px solid var(--slate-200);
-      padding: 16px 0;
+    /* Ambient Glass Navbar */
+    .nav-bar {
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(7, 9, 19, 0.78);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 0;
     }
 
-    .header-inner {
-      max-width: 1380px;
+    .nav-inner {
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -100,685 +113,1026 @@
       gap: 16px;
     }
 
-    .breadcrumbs {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--slate-500);
-      margin-bottom: 4px;
-    }
-
-    .breadcrumbs a {
-      color: var(--slate-500);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-
-    .breadcrumbs a:hover {
-      color: var(--primary);
-    }
-
-    .header-title-group h1 {
-      font-size: 24px;
-      letter-spacing: -0.02em;
-      color: var(--slate-900);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-badge {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-      color: white;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 9999px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .header-actions {
+    .brand-group {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .ref-btn {
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 19px;
+      font-weight: 800;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badges {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .badge-crisp {
+      background: rgba(99, 102, 241, 0.18);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-version {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 1px 8px;
+      border-radius: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--slate-100);
-      color: var(--slate-700);
-      border: 1px solid var(--slate-200);
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
-      font-size: 13px;
-      font-weight: 600;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
       text-decoration: none;
-      transition: all 0.2s;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .ref-btn:hover {
-      background: white;
-      border-color: var(--primary-light);
-      color: var(--primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* Hero Banner */
-    .hero-card {
-      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #3730a3 100%);
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
       color: white;
-      border-radius: var(--radius-xl);
-      padding: 36px 40px;
-      margin-bottom: 28px;
-      box-shadow: var(--shadow-lg);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn.primary-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+
+    .nav-btn.primary-btn:hover {
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* CRISP-DM Process Pipeline Stepper */
+    .crisp-stepper {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin: 24px 0 32px;
+    }
+
+    .step-node {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
       position: relative;
       overflow: hidden;
+      transition: all 0.25s ease;
+      cursor: pointer;
     }
 
-    .hero-card::after {
+    .step-node::after {
       content: '';
       position: absolute;
-      top: -60px;
-      right: -60px;
-      width: 320px;
-      height: 320px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
-      pointer-events: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #4f46e5, #06b6d4);
+      opacity: 0.3;
     }
 
-    .hero-card h2 {
-      font-size: 32px;
-      color: white;
-      margin-bottom: 12px;
-      line-height: 1.25;
+    .step-node.active-step {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
     }
 
-    .hero-card p {
-      font-size: 15px;
-      color: #c7d2fe;
-      max-width: 820px;
-      line-height: 1.6;
+    .step-node.active-step::after {
+      opacity: 1;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #10b981);
     }
 
-    .hero-tags {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 20px;
+    .step-num {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
     }
 
-    .hero-pill {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: #e0e7ff;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 12px;
-      border-radius: 9999px;
+    .step-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    /* Main Grid & Cards */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
+    .step-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    .card {
-      background: white;
+    /* Hero Banner with Visual Data Insights */
+    .hero-card {
+      background: linear-gradient(135deg, rgba(23, 37, 84, 0.75) 0%, rgba(15, 23, 42, 0.85) 60%, rgba(20, 83, 45, 0.4) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.25);
       border-radius: var(--radius-lg);
-      border: 1px solid var(--slate-200);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-      transition: box-shadow 0.2s, border-color 0.2s;
+      padding: 32px 36px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 28px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
     }
 
-    .card:hover {
-      box-shadow: var(--shadow-md);
-      border-color: #cbd5e1;
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    .card-header {
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+    }
+
+    .hero-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .hero-title-row h2 {
+      font-size: 30px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .hero-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 7px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e2e8f0;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-pill.sweet-spot-pill {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(6, 78, 59, 0.45);
+      color: #6ee7b7;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+    }
+
+    .hero-pill.cliff-pill {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(120, 53, 15, 0.4);
+      color: #fde68a;
+    }
+
+    /* Control Deck (Algorithms & Feature Count Slider) */
+    .control-deck {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .deck-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 20px;
+      align-items: center;
+      margin-bottom: 18px;
       flex-wrap: wrap;
       gap: 12px;
     }
 
-    .card-title-group h3 {
-      font-size: 18px;
-      color: var(--slate-900);
+    .deck-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .card-subtitle {
-      font-size: 13px;
-      color: var(--slate-500);
-      margin-top: 2px;
-    }
-
-    /* Controls Bar */
-    .controls-wrapper {
-      background: white;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--slate-200);
-      box-shadow: var(--shadow-sm);
-      padding: 20px 24px;
+    .algo-tabs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
       margin-bottom: 24px;
     }
 
-    .control-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--slate-400);
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    .tabs-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .tab-btn {
-      padding: 10px 18px;
-      background: var(--slate-50);
-      border: 1px solid var(--slate-200);
+    .algo-tab-btn {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      font-size: 13.5px;
-      font-weight: 600;
-      color: var(--slate-700);
+      padding: 14px 16px;
       cursor: pointer;
-      display: inline-flex;
+      color: var(--text-muted);
+      text-align: left;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .algo-tab-btn:hover {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .algo-tab-btn.active {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(30, 41, 59, 0.9) 100%);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .algo-tab-btn.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      width: 70%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
+    }
+
+    .algo-name {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s;
+      margin-bottom: 4px;
     }
 
-    .tab-btn:hover {
-      background: var(--primary-subtle);
-      border-color: var(--primary-light);
-      color: var(--primary);
+    .algo-sub {
+      font-size: 11px;
+      color: var(--text-dim);
     }
 
-    .tab-btn.active {
-      background: var(--primary-dark);
-      border-color: var(--primary-dark);
-      color: white;
-      box-shadow: 0 4px 10px rgba(52, 48, 144, 0.25);
+    .algo-tab-btn.active .algo-sub {
+      color: #a5b4fc;
     }
 
-    .tab-btn .badge-pill {
+    /* Interactive k-Feature Stepper / Timeline */
+    .k-slider-block {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 24px;
+    }
+
+    .k-stepper-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .k-node {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .k-node:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .k-node.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .k-node.sweet-spot {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .k-node.sweet-spot.active {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border-color: var(--emerald);
+      box-shadow: 0 0 25px var(--emerald-glow);
+    }
+
+    .k-node.cliff {
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .k-node.cliff.active {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border-color: var(--amber);
+      box-shadow: 0 0 25px var(--amber-glow);
+    }
+
+    .k-badge-corner {
+      position: absolute;
+      top: -9px;
+      right: 10px;
       font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 9999px;
-      background: rgba(0, 0, 0, 0.06);
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .tab-btn.active .badge-pill {
-      background: rgba(255, 255, 255, 0.25);
+    .badge-sweet {
+      background: #059669;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .badge-cliff {
+      background: #d97706;
+      color: #ffffff;
+    }
+
+    .k-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .k-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* KPI Metrics Ribbon */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      box-shadow: var(--shadow-card);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .kpi-card.highlight-card {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.25) 0%, rgba(15, 23, 42, 0.8) 100%);
+      box-shadow: var(--shadow-sweet);
+    }
+
+    .kpi-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .kpi-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .kpi-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .pill-blue {
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+
+    .pill-amber {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fde68a;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .kpi-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
       color: white;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
     }
 
-    /* Feature Count Step Buttons */
-    .k-selector-group {
+    .kpi-foot {
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Active Predictors Bar */
+    .active-predictors-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .chips-group {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    .k-btn {
-      padding: 9px 16px;
-      border: 1px solid var(--slate-200);
-      background: white;
-      border-radius: var(--radius-md);
+    .chips-label {
       font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .feature-chip-visual {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #c7d2fe;
+      font-size: 12px;
       font-weight: 600;
-      color: var(--slate-700);
-      cursor: pointer;
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .parsimony-banner {
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s;
-    }
-
-    .k-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .k-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: white;
-      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
-    }
-
-    .k-btn.sweet-spot {
-      border-color: var(--accent-emerald);
-      background: var(--accent-emerald-subtle);
-      color: #065f46;
-    }
-
-    .k-btn.sweet-spot.active {
-      background: #059669;
-      border-color: #059669;
-      color: white;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    .k-btn.overfitting {
-      border-color: var(--accent-amber);
-    }
-
-    .k-btn.overfitting.active {
-      background: #d97706;
-      border-color: #d97706;
-      color: white;
-    }
-
-    /* Metrics Grid */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .metric-card {
-      background: white;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--slate-200);
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s;
-    }
-
-    .metric-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .metric-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--primary);
-    }
-
-    .metric-card.sweet::before {
-      background: var(--accent-emerald);
-    }
-
-    .metric-card.alert::before {
-      background: var(--accent-amber);
-    }
-
-    .metric-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--slate-500);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .metric-val {
-      font-size: 26px;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      color: var(--slate-900);
-      line-height: 1.1;
-      margin-bottom: 6px;
-    }
-
-    .metric-note {
-      font-size: 12px;
-      color: var(--slate-500);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .badge-tag {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .badge-green {
-      background: var(--accent-emerald-subtle);
-      color: #065f46;
-      border: 1px solid #a7f3d0;
-    }
-
-    .badge-blue {
-      background: var(--primary-subtle);
-      color: var(--primary-dark);
-      border: 1px solid #c7d2fe;
-    }
-
-    .badge-amber {
-      background: var(--accent-amber-subtle);
-      color: #92400e;
-      border: 1px solid #fde68a;
     }
 
     /* Dual Charts Grid */
     .dual-charts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
-    .chart-container {
+    .chart-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 26px;
+      box-shadow: var(--shadow-card);
       position: relative;
-      height: 340px;
+    }
+
+    .chart-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .chart-title-group h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-subtitle {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
+
+    .chart-box {
+      height: 350px;
+      position: relative;
       width: 100%;
     }
 
-    /* Mathematical Equation Box */
-    .equation-card {
-      background: linear-gradient(to right, #fcfdff, #f8faff);
-      border: 1px solid #cfcfea;
+    /* Mathematical Equation Terminal Card */
+    .equation-terminal {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 27, 75, 0.6) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
       border-left: 5px solid var(--primary);
       border-radius: var(--radius-md);
-      padding: 20px 24px;
-      margin-bottom: 24px;
+      padding: 22px 26px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-card);
     }
 
-    .equation-title {
+    .eq-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .eq-title {
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--primary);
-      margin-bottom: 8px;
+      letter-spacing: 0.1em;
+      color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .equation-formula {
-      font-family: 'Fira Code', monospace;
-      font-size: 15px;
-      color: var(--slate-900);
-      line-height: 1.8;
-      word-break: break-word;
-      background: white;
-      padding: 14px 18px;
+    .eq-formula-box {
+      background: rgba(7, 9, 19, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: var(--radius-sm);
-      border: 1px solid var(--slate-200);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #e2e8f0;
+      word-break: break-word;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
     }
 
-    .eq-intercept { color: #4338ca; font-weight: 600; }
-    .eq-var { color: #0284c7; font-weight: 600; }
-    .eq-pos { color: #059669; font-weight: 600; }
-    .eq-neg { color: #dc2626; font-weight: 600; }
+    .eq-intercept { color: #a5b4fc; font-weight: 700; }
+    .eq-var { color: #38bdf8; font-weight: 700; }
+    .eq-plus { color: #34d399; font-weight: 700; margin: 0 4px; }
+    .eq-minus { color: #f43f5e; font-weight: 700; margin: 0 4px; }
 
-    /* Tables */
-    .table-responsive {
+    /* Studio Layout: Coefficients Table & Live Simulator */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .studio-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 26px;
+      box-shadow: var(--shadow-card);
+    }
+
+    /* Table Visual Styling */
+    .table-container {
       overflow-x: auto;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
     }
 
-    table.data-table {
+    table.modern-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13.5px;
+      font-size: 13px;
       text-align: left;
     }
 
-    table.data-table thead {
-      background: var(--slate-100);
-      border-bottom: 1px solid var(--slate-200);
+    table.modern-table thead {
+      background: rgba(30, 41, 59, 0.7);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    table.data-table th {
-      padding: 12px 16px;
-      font-weight: 600;
-      color: var(--slate-700);
-      font-size: 12px;
+    table.modern-table th {
+      padding: 12px 14px;
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
     }
 
-    table.data-table td {
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--slate-100);
-      color: var(--slate-700);
+    table.modern-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
     }
 
-    table.data-table tbody tr:last-child td {
-      border-bottom: none;
+    table.modern-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
     }
 
-    table.data-table tbody tr:hover {
-      background: #f8faff;
-    }
-
-    .feature-chip {
-      background: var(--primary-subtle);
-      color: var(--primary-dark);
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 12px;
+    .vif-gauge-bar {
+      width: 60px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
       display: inline-block;
+      vertical-align: middle;
+      margin-left: 6px;
     }
 
-    /* Interactive Calculator Section */
-    .calc-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 24px;
+    .vif-fill {
+      height: 100%;
+      border-radius: 3px;
     }
 
-    @media (max-width: 900px) {
-      .calc-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .input-group {
-      margin-bottom: 16px;
-    }
-
-    .input-label-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--slate-700);
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--slate-300);
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      font-family: inherit;
-      color: var(--slate-900);
-      transition: all 0.15s;
-    }
-
-    .input-field:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-    }
-
-    .range-slider {
-      width: 100%;
-      margin-top: 6px;
-      accent-color: var(--primary);
-    }
-
-    .prediction-output-box {
-      background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%);
-      color: white;
-      border-radius: var(--radius-lg);
-      padding: 30px;
+    /* Visual Profit Predictor Simulator */
+    .simulator-box {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      gap: 16px;
+    }
+
+    .scenario-presets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .scenario-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .scenario-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .sim-input-row {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      transition: border-color 0.2s ease;
+    }
+
+    .sim-input-row:focus-within {
+      border-color: var(--border-focus);
+    }
+
+    .sim-label-bar {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      text-align: center;
-      box-shadow: var(--shadow-md);
-      position: relative;
-      overflow: hidden;
+      margin-bottom: 8px;
     }
 
-    .prediction-output-box::before {
-      content: '';
-      position: absolute;
-      top: -40px;
-      right: -40px;
-      width: 160px;
-      height: 160px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .pred-label {
+    .sim-label-name {
       font-size: 13px;
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sim-label-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .sim-range {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #1e293b;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .sim-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
+      border: 2px solid #ffffff;
+      transition: transform 0.1s;
+    }
+
+    .sim-range::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .sim-select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: white;
+      outline: none;
+    }
+
+    .sim-select:focus {
+      border-color: var(--primary);
+    }
+
+    /* Massive Visual Prediction Output Display */
+    .prediction-hero-box {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      text-align: center;
+      box-shadow: var(--shadow-sweet);
+      margin-top: 8px;
+    }
+
+    .pred-hero-label {
+      font-size: 12px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #c7d2fe;
-      margin-bottom: 10px;
+      color: #a7f3d0;
+      margin-bottom: 6px;
     }
 
-    .pred-value {
-      font-size: 38px;
+    .pred-hero-val {
       font-family: 'Outfit', sans-serif;
-      font-weight: 800;
+      font-size: 42px;
+      font-weight: 900;
       color: #34d399;
-      margin-bottom: 12px;
       letter-spacing: -0.02em;
+      text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+      margin-bottom: 12px;
     }
 
-    .pred-formula-note {
+    /* Contribution Breakdown Visualization */
+    .breakdown-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
       font-size: 12px;
-      color: #a5b4fc;
-      line-height: 1.5;
     }
 
-    /* Outliers & Diagnostics */
-    .status-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 6px;
+    .breakdown-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 8px;
     }
-    .dot-green { background: var(--accent-emerald); }
-    .dot-amber { background: var(--accent-amber); }
-    .dot-red { background: var(--accent-rose); }
 
-    /* Footer & Acknowledgments */
+    .breakdown-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .breakdown-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 2px;
+      margin-bottom: 8px;
+    }
+
+    .breakdown-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #06b6d4);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* Outliers & Diagnostics Section */
+    .diagnostics-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 26px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 40px;
+    }
+
+    /* Footer */
     footer {
-      margin-top: 50px;
-      background: white;
-      border-top: 1px solid var(--slate-200);
-      padding: 36px 0;
-      color: var(--slate-600);
-      font-size: 13.5px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(7, 9, 19, 0.8);
+      padding: 40px 0;
+      margin-top: 60px;
     }
 
     .footer-inner {
-      max-width: 1380px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 24px;
+      gap: 30px;
     }
 
     .ack-card {
-      background: var(--slate-50);
-      border: 1px solid var(--slate-200);
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 16px 20px;
-      margin-top: 16px;
-      line-height: 1.6;
+      line-height: 1.7;
+      font-size: 13px;
+      color: #94a3b8;
     }
 
     .ack-card a {
-      color: var(--primary);
+      color: var(--primary-light);
       text-decoration: underline;
-      font-weight: 500;
     }
 
-    @media (max-width: 768px) {
-      .dual-charts-grid {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dual-charts-grid,
+      .studio-grid {
         grid-template-columns: 1fr;
       }
-      .hero-card {
-        padding: 24px;
+      .crisp-stepper {
+        grid-template-columns: repeat(3, 1fr);
       }
-      .hero-card h2 {
-        font-size: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .crisp-stepper {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .k-stepper-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .hero-card {
+        padding: 24px 20px;
+      }
+      .hero-title-row h2 {
+        font-size: 22px;
+      }
+      .pred-hero-val {
+        font-size: 32px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Header Navigation -->
-  <header class="top-header">
-    <div class="header-inner">
-      <div>
-        <div class="breadcrumbs">
-          <a href="#"><i class="fa-solid fa-house"></i> Home</a>
-          <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
-          <a href="#">Regression Analysis</a>
-          <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
-          <span style="color: var(--slate-800); font-weight: 600;">50 Startups Feature Progression</span>
+  <!-- Top Ambient Navigation Bar -->
+  <header class="nav-bar">
+    <div class="nav-inner">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <i class="fa-solid fa-chart-line"></i>
         </div>
-        <div class="header-title-group">
-          <h1>
-            <i class="fa-solid fa-chart-line" style="color: var(--primary);"></i>
-            50 Startups Multiple Linear Regression Explorer
-            <span class="brand-badge">CRISP-DM</span>
-          </h1>
+        <div class="brand-text">
+          <h1>50 Startups 多元線性迴歸與特徵選擇儀表板</h1>
+          <div class="brand-badges">
+            <span class="badge-crisp">CRISP-DM 標準流程</span>
+            <span class="badge-version">StatsUnlock SaaS 佈局</span>
+          </div>
         </div>
       </div>
-      <div class="header-actions">
-        <a href="https://statsunlock.com/multiple-linear-regression-calculator/" target="_blank" class="ref-btn">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          Style Ref: StatsUnlock
+      <div class="nav-links">
+        <a href="https://github.com/ryanlin19960221/AIoT-DIC2-MultipleLR" target="_blank" class="nav-btn">
+          <i class="fa-brands fa-github"></i> GitHub 儲存庫
+        </a>
+        <a href="https://statsunlock.com/multiple-linear-regression-calculator/" target="_blank" class="nav-btn primary-btn">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> 設計參考: StatsUnlock
         </a>
       </div>
     </div>
@@ -786,196 +1140,273 @@
 
   <div class="container">
 
+    <!-- CRISP-DM 6-Stage Process Stepper -->
+    <div class="crisp-stepper">
+      <div class="step-node" onclick="showCrispInfo(1)">
+        <div class="step-num">STAGE 01</div>
+        <div class="step-title"><i class="fa-solid fa-bullseye" style="color: var(--primary);"></i> 商業理解</div>
+        <div class="step-tag">新創獲利預測與歸因</div>
+      </div>
+      <div class="step-node" onclick="showCrispInfo(2)">
+        <div class="step-num">STAGE 02</div>
+        <div class="step-title"><i class="fa-solid fa-database" style="color: var(--cyan);"></i> 資料理解</div>
+        <div class="step-tag">50 樣本無缺失值檢查</div>
+      </div>
+      <div class="step-node" onclick="showCrispInfo(3)">
+        <div class="step-num">STAGE 03</div>
+        <div class="step-title"><i class="fa-solid fa-filter" style="color: var(--amber);"></i> 資料準備</div>
+        <div class="step-tag">One-Hot 消除虛擬變數陷阱</div>
+      </div>
+      <div class="step-node active-step" onclick="showCrispInfo(4)">
+        <div class="step-num">STAGE 04</div>
+        <div class="step-title"><i class="fa-solid fa-brain" style="color: var(--emerald);"></i> 建立模型</div>
+        <div class="step-tag">5 種特徵選擇演算法</div>
+      </div>
+      <div class="step-node active-step" onclick="showCrispInfo(5)">
+        <div class="step-num">STAGE 05</div>
+        <div class="step-title"><i class="fa-solid fa-chart-pie" style="color: var(--purple);"></i> 模型評估</div>
+        <div class="step-tag">奧坎剃刀: k=2 甜蜜點</div>
+      </div>
+      <div class="step-node" onclick="showCrispInfo(6)">
+        <div class="step-num">STAGE 06</div>
+        <div class="step-title"><i class="fa-solid fa-rocket" style="color: var(--rose);"></i> 部署推論</div>
+        <div class="step-tag">即時預測 API 互動器</div>
+      </div>
+    </div>
+
     <!-- Hero Card Banner -->
     <div class="hero-card">
-      <h2>Feature Selection & Parsimony Analysis</h2>
-      <p>
-        Compare 5 Machine Learning Feature Selection Algorithms (<strong>Lasso</strong>, <strong>Forward SFS</strong>, <strong>RFE</strong>, <strong>ElasticNet</strong>, <strong>Exhaustive Search</strong>) against Baseline OLS. Explore the bias-variance tradeoff across feature counts $k=1 \dots 5$, pinpointing the <strong>2-feature optimal sweet spot</strong> and the <strong>5-feature overfitting cliff</strong>.
-      </p>
-      <div class="hero-tags">
-        <span class="hero-pill"><i class="fa-solid fa-database"></i> 50 Startups Dataset</span>
-        <span class="hero-pill"><i class="fa-solid fa-bolt"></i> 5 Selection Methods</span>
-        <span class="hero-pill"><i class="fa-solid fa-star" style="color: #34d399;"></i> Global Sweet Spot: k=2 ($8,198.80 RMSE)</span>
-        <span class="hero-pill"><i class="fa-solid fa-triangle-exclamation" style="color: #fbbf24;"></i> Overfitting Warning: k=5 ($9,137.99 RMSE)</span>
-      </div>
-    </div>
-
-    <!-- Controls Wrapper -->
-    <div class="controls-wrapper">
-      <span class="control-label"><i class="fa-solid fa-sliders"></i> 1. Select Feature Selection Algorithm</span>
-      <div class="tabs-pills" id="algoTabs">
-        <button class="tab-btn active" data-algo="Lasso">
-          <i class="fa-solid fa-filter"></i> Lasso (L1 Ranking)
-          <span class="badge-pill">Matches Benchmark</span>
-        </button>
-        <button class="tab-btn" data-algo="Forward SFS">
-          <i class="fa-solid fa-arrow-trend-up"></i> Forward SFS
-          <span class="badge-pill">Greedy</span>
-        </button>
-        <button class="tab-btn" data-algo="RFE">
-          <i class="fa-solid fa-scissors"></i> RFE
-          <span class="badge-pill">Backward</span>
-        </button>
-        <button class="tab-btn" data-algo="ElasticNet">
-          <i class="fa-solid fa-diagram-project"></i> ElasticNet
-          <span class="badge-pill">L1 + L2</span>
-        </button>
-        <button class="tab-btn" data-algo="Exhaustive">
-          <i class="fa-solid fa-magnifying-glass-chart"></i> Exhaustive Search
-          <span class="badge-pill">Best Subset</span>
-        </button>
-        <button class="tab-btn" data-algo="ALL" style="border-left: 2px solid var(--primary);">
-          <i class="fa-solid fa-layer-group"></i> 🌟 Compare All 5 Methods
-        </button>
-      </div>
-
-      <span class="control-label" style="margin-top: 12px;"><i class="fa-solid fa-list-ol"></i> 2. Number of Features (k = 1 to 5)</span>
-      <div class="k-selector-group" id="kSelectorGroup">
-        <button class="k-btn" data-k="1">k = 1 <span style="font-weight: 400; font-size: 11px;">(R&D Spend)</span></button>
-        <button class="k-btn sweet-spot active" data-k="2">k = 2 ★ Optimal Sweet Spot <span style="font-size: 11px; font-weight: 700;">(Min RMSE)</span></button>
-        <button class="k-btn" data-k="3">k = 3 <span style="font-size: 11px;">(+ State / Admin)</span></button>
-        <button class="k-btn" data-k="4">k = 4 <span style="font-size: 11px;">(4 Predictors)</span></button>
-        <button class="k-btn overfitting" data-k="5">k = 5 ⚠ Full Model <span style="font-size: 11px; font-weight: 700;">(Overfitting Cliff)</span></button>
-      </div>
-    </div>
-
-    <!-- Metrics Ribbon -->
-    <div class="metrics-grid" id="metricsGrid">
-      <div class="metric-card sweet">
-        <div class="metric-title">
-          <span>Test RMSE</span>
-          <span class="badge-tag badge-green" id="rmseBadge"><i class="fa-solid fa-award"></i> Optimal</span>
+      <div class="hero-content">
+        <div class="hero-title-row">
+          <h2>特徵選擇與模型精簡性分析 (Occam's Razor)</h2>
         </div>
-        <div class="metric-val" id="valRMSE">$8,198.80</div>
-        <div class="metric-note">
-          <span>Lower is better (Best across methods)</span>
-        </div>
-      </div>
-
-      <div class="metric-card sweet">
-        <div class="metric-title">
-          <span>R² Score</span>
-          <span class="badge-tag badge-blue"><i class="fa-solid fa-circle-check"></i> 94.7% Fit</span>
-        </div>
-        <div class="metric-val" id="valR2">0.9474</div>
-        <div class="metric-note">
-          <span>Explains 94.74% of profit variance</span>
-        </div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-title">
-          <span>Adjusted R²</span>
-          <i class="fa-solid fa-scale-balanced" style="color: var(--slate-400);"></i>
-        </div>
-        <div class="metric-val" id="valAdjR2">0.9324</div>
-        <div class="metric-note">
-          <span>Penalizes redundant parameters</span>
-        </div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-title">
-          <span>Mean Absolute Error</span>
-          <i class="fa-solid fa-calculator" style="color: var(--slate-400);"></i>
-        </div>
-        <div class="metric-val" id="valMAE">$6,488.75</div>
-        <div class="metric-note">
-          <span>Average prediction error ($)</span>
-        </div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-title">
-          <span>F-Statistic</span>
-          <span class="badge-tag badge-green">p &lt; 0.0001</span>
-        </div>
-        <div class="metric-val" id="valFStat">347.8</div>
-        <div class="metric-note">
-          <span>Model is highly statistically significant</span>
+        <p class="hero-desc">
+          橫向評估 5 種機器學習特徵選擇演算法（<strong>Lasso L1</strong>、<strong>Forward SFS</strong>、<strong>RFE</strong>、<strong>ElasticNet</strong>、<strong>Exhaustive Search</strong>）對決 OLS 基準模型。
+          直觀掌握特徵數量 $k=1 \dots 5$ 之偏差與變異權衡，精準定位 <strong>k=2 最佳甜蜜點</strong> 與 <strong>k=5 深度過擬合懸崖</strong>。
+        </p>
+        <div class="hero-badges-row">
+          <span class="hero-pill"><i class="fa-solid fa-database"></i> 50 Startups Benchmark</span>
+          <span class="hero-pill sweet-spot-pill"><i class="fa-solid fa-award"></i> 全域最佳甜蜜點: k=2 (最低 RMSE $8,198.80)</span>
+          <span class="hero-pill cliff-pill"><i class="fa-solid fa-triangle-exclamation"></i> 過擬合懸崖: k=5 (RMSE 激增至 $9,137.99)</span>
+          <span class="hero-pill"><i class="fa-solid fa-bolt"></i> 研發支出 (R&D) 占整體獲利解釋力 > 94.6%</span>
         </div>
       </div>
     </div>
 
-    <!-- Active Features Chips -->
-    <div style="background: white; border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-        <span style="font-size: 13px; font-weight: 700; color: var(--slate-700);">
-          <i class="fa-solid fa-check-double" style="color: var(--primary);"></i> Active Predictors (<span id="featuresCount">2</span>):
+    <!-- Control Center Deck -->
+    <div class="control-deck">
+      <div class="deck-header">
+        <div class="deck-title">
+          <i class="fa-solid fa-sliders"></i> 第一步：選擇特徵選取演算法 (Feature Selection Algorithm)
+        </div>
+        <span style="font-size: 12px; color: var(--text-dim);">支援單一演算法深入探勘或 5 大模型同屏比較</span>
+      </div>
+
+      <div class="algo-tabs-grid" id="algoTabs">
+        <button class="algo-tab-btn active" data-algo="Lasso">
+          <div class="algo-name"><i class="fa-solid fa-filter" style="color: var(--primary);"></i> Lasso (L1)</div>
+          <div class="algo-sub">標準化係數絕對值排序</div>
+        </button>
+        <button class="algo-tab-btn" data-algo="Forward SFS">
+          <div class="algo-name"><i class="fa-solid fa-arrow-trend-up" style="color: var(--amber);"></i> Forward SFS</div>
+          <div class="algo-sub">貪婪前向逐步迴歸</div>
+        </button>
+        <button class="algo-tab-btn" data-algo="RFE">
+          <div class="algo-name"><i class="fa-solid fa-scissors" style="color: var(--emerald);"></i> RFE 遞歸消除</div>
+          <div class="algo-sub">後向迭代修剪最弱特徵</div>
+        </button>
+        <button class="algo-tab-btn" data-algo="ElasticNet">
+          <div class="algo-name"><i class="fa-solid fa-diagram-project" style="color: var(--rose);"></i> ElasticNet</div>
+          <div class="algo-sub">L1 稀疏性 + L2 穩定性</div>
+        </button>
+        <button class="algo-tab-btn" data-algo="Exhaustive">
+          <div class="algo-name"><i class="fa-solid fa-magnifying-glass-chart" style="color: var(--purple);"></i> Exhaustive 窮舉</div>
+          <div class="algo-sub">全子集最佳化組合搜尋</div>
+        </button>
+        <button class="algo-tab-btn" data-algo="ALL" style="border-left: 2px solid var(--cyan);">
+          <div class="algo-name"><i class="fa-solid fa-layer-group" style="color: var(--cyan);"></i> 🌟 5 大模型綜合評比</div>
+          <div class="algo-sub">同屏疊加趨勢線比較</div>
+        </button>
+      </div>
+
+      <!-- Interactive k-Feature Stepper -->
+      <div class="k-slider-block">
+        <div class="deck-title" style="margin-bottom: 12px; color: var(--text-muted);">
+          <i class="fa-solid fa-list-ol"></i> 第二步：特徵數量階梯 (Number of Predictors, k = 1 ~ 5)
+        </div>
+        <div class="k-stepper-row" id="kStepper">
+          <div class="k-node" data-k="1">
+            <div class="k-num">k = 1</div>
+            <div class="k-label">單一核心 (R&D Spend)</div>
+          </div>
+          <div class="k-node sweet-spot active" data-k="2">
+            <span class="k-badge-corner badge-sweet">★ 最佳甜蜜點</span>
+            <div class="k-num" style="color: #34d399;">k = 2</div>
+            <div class="k-label">R&D + Marketing (最低 RMSE)</div>
+          </div>
+          <div class="k-node" data-k="3">
+            <div class="k-num">k = 3</div>
+            <div class="k-label">+ 行政支出 / 地理州別</div>
+          </div>
+          <div class="k-node" data-k="4">
+            <div class="k-num">k = 4</div>
+            <div class="k-label">4 項自變數組合</div>
+          </div>
+          <div class="k-node cliff" data-k="5">
+            <span class="k-badge-corner badge-cliff">⚠ 過擬合</span>
+            <div class="k-num" style="color: #fbbf24;">k = 5</div>
+            <div class="k-label">全自變數 (引入噪聲與共線性)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Model KPIs Ribbon -->
+    <div class="metrics-grid">
+      <div class="kpi-card highlight-card">
+        <div class="kpi-head">
+          <span class="kpi-title">測試集 RMSE (均方根誤差)</span>
+          <span class="kpi-pill pill-green" id="kpiRmseBadge"><i class="fa-solid fa-award"></i> 最佳極小值</span>
+        </div>
+        <div class="kpi-val" id="kpiRMSE">$8,198.80</div>
+        <div class="kpi-foot">
+          <i class="fa-solid fa-arrow-down" style="color: var(--emerald);"></i>
+          <span>數值愈低愈佳，k=2 達到全域最小預測誤差</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-title">決定係數 (R² Score)</span>
+          <span class="kpi-pill pill-blue"><i class="fa-solid fa-circle-check"></i> 高擬合優度</span>
+        </div>
+        <div class="kpi-val" id="kpiR2">0.9474</div>
+        <div class="kpi-foot">
+          <i class="fa-solid fa-chart-line" style="color: var(--cyan);"></i>
+          <span>模型成功解釋了高達 94.74% 的獲利變異</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-title">調整後決定係數 (Adj. R²)</span>
+          <span class="kpi-pill pill-blue">懲罰自變數</span>
+        </div>
+        <div class="kpi-val" id="kpiAdjR2">0.9324</div>
+        <div class="kpi-foot">
+          <i class="fa-solid fa-scale-balanced" style="color: var(--text-dim);"></i>
+          <span>考量自由度後的淨模型解釋力</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-title">平均絕對誤差 (MAE)</span>
+          <span class="kpi-pill pill-green">平均偏誤</span>
+        </div>
+        <div class="kpi-val" id="kpiMAE">$6,488.75</div>
+        <div class="kpi-foot">
+          <i class="fa-solid fa-calculator" style="color: var(--text-dim);"></i>
+          <span>樣本外測試集之實際金額平均偏差</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-title">F-統計量檢定 (F-Stat)</span>
+          <span class="kpi-pill pill-green">p &lt; 0.0001</span>
+        </div>
+        <div class="kpi-val" id="kpiFStat">347.8</div>
+        <div class="kpi-foot">
+          <i class="fa-solid fa-shield-halved" style="color: var(--emerald);"></i>
+          <span>迴歸方程式具備極高統計顯著性 (***)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Predictors & Parsimony Chip Bar -->
+    <div class="active-predictors-bar">
+      <div class="chips-group">
+        <span class="chips-label">
+          <i class="fa-solid fa-check-double" style="color: var(--primary);"></i> 當前啟用自變數 (<span id="featuresCount" style="color: white;">2</span> 項):
         </span>
         <div id="featuresListChips" style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <span class="feature-chip">R&D Spend</span>
-          <span class="feature-chip">Marketing Spend</span>
+          <span class="feature-chip-visual">R&D Spend</span>
+          <span class="feature-chip-visual">Marketing Spend</span>
         </div>
       </div>
-      <div id="parsimonyNotice" class="badge-tag badge-green" style="font-size: 12px; padding: 4px 10px;">
-        <i class="fa-solid fa-star"></i> Occam's Razor: 2-feature model minimizes out-of-sample error.
+      <div id="parsimonyNotice" class="parsimony-banner pill-green">
+        <i class="fa-solid fa-star"></i> 奧坎剃刀原則：2 特徵模型以最簡架構達到全域最低樣本外誤差。
       </div>
     </div>
 
-    <!-- Dual Charts Section (Matching User's Uploaded Plot) -->
+    <!-- Dual Interactive Comparison Charts -->
     <div class="dual-charts-grid">
       <!-- Left Chart: RMSE -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title-group">
-            <h3><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> RMSE by Number of Features</h3>
-            <div class="card-subtitle">Lower is better. Sharp valley at k=2, jump at k=5.</div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-title-group">
+            <h3><i class="fa-solid fa-chart-line" style="color: var(--cyan);"></i> 特徵數與 RMSE 誤差曲線</h3>
+            <div class="chart-subtitle">數值愈低愈佳。觀察 k=2 處之深 V 谷底與 k=5 之誤差反彈。</div>
           </div>
-          <span class="badge-tag badge-blue" id="rmseChartBadge">Lasso (L1)</span>
+          <span class="kpi-pill pill-blue" id="rmseChartBadge">Lasso (L1)</span>
         </div>
-        <div class="chart-container">
+        <div class="chart-box">
           <canvas id="rmseChart"></canvas>
         </div>
       </div>
 
-      <!-- Right Chart: R-squared -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title-group">
-            <h3><i class="fa-solid fa-arrow-trend-up" style="color: var(--accent-emerald);"></i> R-squared by Number of Features</h3>
-            <div class="card-subtitle">Higher is better. Peaks at k=2 (0.9474), drops at k=5.</div>
+      <!-- Right Chart: R2 -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-title-group">
+            <h3><i class="fa-solid fa-arrow-trend-up" style="color: var(--emerald);"></i> 特徵數與 R² 擬合優度曲線</h3>
+            <div class="chart-subtitle">數值愈高愈佳。峰值出現在 k=2 (0.9474)，全模型 k=5 出現退化。</div>
           </div>
-          <span class="badge-tag badge-green" id="r2ChartBadge">Peak at k=2</span>
+          <span class="kpi-pill pill-green" id="r2ChartBadge">峰值在 k=2</span>
         </div>
-        <div class="chart-container">
+        <div class="chart-box">
           <canvas id="r2Chart"></canvas>
         </div>
       </div>
     </div>
 
-    <!-- Mathematical Equation Card -->
-    <div class="equation-card">
-      <div class="equation-title">
-        <i class="fa-solid fa-square-root-variable"></i> Fitted OLS Regression Equation
+    <!-- Visual Mathematical Equation Terminal Card -->
+    <div class="equation-terminal">
+      <div class="eq-header">
+        <div class="eq-title">
+          <i class="fa-solid fa-square-root-variable"></i> 即時迴歸方程式 (Fitted OLS Mathematical Equation)
+        </div>
+        <span style="font-size: 11px; color: #a5b4fc; font-family: 'JetBrains Mono';">動態隨自變數切換更新</span>
       </div>
-      <div class="equation-formula" id="equationBox">
+      <div class="eq-formula-box" id="equationBox">
         Profit = 44,050.85 + 0.825 × (R&D Spend) + 0.024 × (Marketing Spend)
       </div>
     </div>
 
-    <!-- Interactive Grid: Live Calculator & Coefficients Table -->
-    <div class="calc-grid">
+    <!-- Studio Grid: Coefficients Table vs Live Interactive Simulator -->
+    <div class="studio-grid">
       
-      <!-- Left: StatsUnlock-Style Coefficients Table -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title-group">
-            <h3><i class="fa-solid fa-table" style="color: var(--primary);"></i> Model Coefficients & Statistical Tests</h3>
-            <div class="card-subtitle">Detailed parameter estimates, standard errors, t-statistics, and VIF multicollinearity.</div>
+      <!-- Left: StatsUnlock Style Coefficients & VIF Table -->
+      <div class="studio-card">
+        <div class="chart-card-header">
+          <div class="chart-title-group">
+            <h3><i class="fa-solid fa-table" style="color: var(--primary);"></i> 迴歸係數與統計推論檢定 (Coefficients & VIF)</h3>
+            <div class="chart-subtitle">包含估計值 (β)、標準誤、t 統計量、p 值、95% 信賴區間與共線性 VIF。</div>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="data-table" id="coefTable">
+
+        <div class="table-container">
+          <table class="modern-table">
             <thead>
               <tr>
-                <th>Predictor</th>
-                <th>Estimate (β)</th>
-                <th>Std. Error</th>
-                <th>t-Stat</th>
-                <th>p-Value</th>
-                <th>95% Conf. Int</th>
-                <th>VIF</th>
+                <th>自變數 (Predictor)</th>
+                <th>迴歸係數 (β)</th>
+                <th>標準誤 (SE)</th>
+                <th>t 統計量</th>
+                <th>顯著性 (p-value)</th>
+                <th>95% 信賴區間</th>
+                <th>共線性 (VIF)</th>
               </tr>
             </thead>
             <tbody id="coefTableBody">
@@ -985,65 +1416,74 @@
         </div>
       </div>
 
-      <!-- Right: Live Startup Profit Predictor Calculator -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title-group">
-            <h3><i class="fa-solid fa-calculator" style="color: var(--accent-emerald);"></i> Live Profit Predictor</h3>
-            <div class="card-subtitle">Test predictions in real-time with the active model.</div>
+      <!-- Right: Live Profit Predictor Simulator Studio -->
+      <div class="studio-card">
+        <div class="chart-card-header">
+          <div class="chart-title-group">
+            <h3><i class="fa-solid fa-calculator" style="color: var(--emerald);"></i> 新創獲利推論模擬器 (Live Predictor)</h3>
+            <div class="chart-subtitle">動態拉動自變數滑桿，即時解析各項支出對利潤的邊際貢獻。</div>
           </div>
-          <span class="badge-tag badge-green"><i class="fa-solid fa-bolt"></i> Real-time</span>
         </div>
 
-        <div>
-          <!-- R&D Spend -->
-          <div class="input-group">
-            <div class="input-label-row">
-              <span>R&D Spend ($)</span>
-              <span id="labelRD" style="color: var(--primary); font-family: 'Fira Code', monospace;">$100,000</span>
-            </div>
-            <input type="number" id="numRD" class="input-field" value="100000" min="0" max="250000" step="5000">
-            <input type="range" id="rangeRD" class="range-slider" value="100000" min="0" max="250000" step="5000">
+        <div class="simulator-box">
+          <!-- Quick Preset Buttons -->
+          <div class="scenario-presets">
+            <span style="font-size: 11px; color: var(--text-dim); display: flex; align-items: center;">快捷情境：</span>
+            <button class="scenario-btn" onclick="applyPreset(160000, 130000, 300000, 'California')">🔥 測試案例 (高技術型)</button>
+            <button class="scenario-btn" onclick="applyPreset(70000, 120000, 200000, 'New York')">📊 平均型新創</button>
+            <button class="scenario-btn" onclick="applyPreset(10000, 80000, 450000, 'Florida')">🚀 行銷導向型</button>
           </div>
 
-          <!-- Marketing Spend -->
-          <div class="input-group">
-            <div class="input-label-row">
-              <span>Marketing Spend ($)</span>
-              <span id="labelMkt" style="color: var(--primary); font-family: 'Fira Code', monospace;">$150,000</span>
+          <!-- R&D Spend Slider -->
+          <div class="sim-input-row">
+            <div class="sim-label-bar">
+              <span class="sim-label-name"><i class="fa-solid fa-microchip" style="color: var(--cyan);"></i> 研發支出 (R&D Spend)</span>
+              <span class="sim-label-val" id="labelRD">$160,000</span>
             </div>
-            <input type="number" id="numMkt" class="input-field" value="150000" min="0" max="500000" step="5000">
-            <input type="range" id="rangeMkt" class="range-slider" value="150000" min="0" max="500000" step="5000">
+            <input type="range" id="rangeRD" class="sim-range" value="160000" min="0" max="250000" step="5000">
           </div>
 
-          <!-- Administration -->
-          <div class="input-group" id="inputGroupAdmin">
-            <div class="input-label-row">
-              <span>Administration ($)</span>
-              <span id="labelAdmin" style="color: var(--slate-500); font-family: 'Fira Code', monospace;">$120,000</span>
+          <!-- Marketing Spend Slider -->
+          <div class="sim-input-row">
+            <div class="sim-label-bar">
+              <span class="sim-label-name"><i class="fa-solid fa-bullhorn" style="color: var(--amber);"></i> 行銷支出 (Marketing Spend)</span>
+              <span class="sim-label-val" id="labelMkt">$300,000</span>
             </div>
-            <input type="number" id="numAdmin" class="input-field" value="120000" min="0" max="250000" step="5000">
-            <input type="range" id="rangeAdmin" class="range-slider" value="120000" min="0" max="250000" step="5000">
+            <input type="range" id="rangeMkt" class="sim-range" value="300000" min="0" max="500000" step="5000">
           </div>
 
-          <!-- State -->
-          <div class="input-group" id="inputGroupState">
-            <div class="input-label-row">
-              <span>State Location</span>
+          <!-- Administration Spend Slider -->
+          <div class="sim-input-row" id="rowAdmin">
+            <div class="sim-label-bar">
+              <span class="sim-label-name"><i class="fa-solid fa-building-user" style="color: var(--primary);"></i> 行政管理支出 (Administration)</span>
+              <span class="sim-label-val" id="labelAdmin">$130,000</span>
             </div>
-            <select id="selectState" class="input-field">
-              <option value="California">California (Reference)</option>
-              <option value="New York">New York</option>
-              <option value="Florida">Florida</option>
+            <input type="range" id="rangeAdmin" class="sim-range" value="130000" min="0" max="250000" step="5000">
+          </div>
+
+          <!-- State Dropdown -->
+          <div class="sim-input-row" id="rowState">
+            <div class="sim-label-bar">
+              <span class="sim-label-name"><i class="fa-solid fa-location-dot" style="color: var(--rose);"></i> 公司所在州別 (State Location)</span>
+            </div>
+            <select id="selectState" class="sim-select">
+              <option value="California">California 加州 (基準類別)</option>
+              <option value="New York">New York 紐約州</option>
+              <option value="Florida">Florida 佛羅里達州</option>
             </select>
           </div>
 
-          <!-- Output Box -->
-          <div class="prediction-output-box">
-            <div class="pred-label">Predicted Startup Profit</div>
-            <div class="pred-value" id="predProfitOutput">$130,154.20</div>
-            <div class="pred-formula-note" id="predFormulaNote">
-              Calculated using: β₀ + β₁(R&D) + β₂(Marketing)
+          <!-- Visual Prediction Box -->
+          <div class="prediction-hero-box">
+            <div class="pred-hero-label">預估年度獲利總金額 (Predicted Net Profit)</div>
+            <div class="pred-hero-val" id="predProfitOutput">$182,298.25</div>
+
+            <!-- Contribution Breakdown Progress -->
+            <div class="breakdown-box">
+              <div class="breakdown-title">各項要素實質貢獻拆解 (Contribution Waterfall)</div>
+              <div id="breakdownContainer">
+                <!-- Dynamically populated -->
+              </div>
             </div>
           </div>
         </div>
@@ -1051,27 +1491,28 @@
 
     </div>
 
-    <!-- Residual Diagnostics & Top 10 Outliers -->
-    <div class="card" style="margin-top: 24px;">
-      <div class="card-header">
-        <div class="card-title-group">
-          <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--accent-amber);"></i> Test Set Residuals & Outliers Diagnostic</h3>
-          <div class="card-subtitle">Top absolute residuals on the out-of-sample test set (10 startups).</div>
+    <!-- Test Set Residual Diagnostics & Outliers -->
+    <div class="diagnostics-card">
+      <div class="chart-card-header">
+        <div class="chart-title-group">
+          <h3><i class="fa-solid fa-magnifying-glass" style="color: var(--amber);"></i> 樣本外測試集殘差與離群值診斷 (Residuals & Outliers)</h3>
+          <div class="chart-subtitle">評估 10 家獨立測試集新創公司的實際獲利 vs 預測獲利之絕對誤差與百分比偏誤。</div>
         </div>
-        <span class="badge-tag badge-blue"><i class="fa-solid fa-filter"></i> Sorted by |Residual|</span>
+        <span class="kpi-pill pill-blue"><i class="fa-solid fa-arrow-down-short-wide"></i> 依絕對殘差降冪排序</span>
       </div>
-      <div class="table-responsive">
-        <table class="data-table">
+
+      <div class="table-container">
+        <table class="modern-table">
           <thead>
             <tr>
-              <th>Rank</th>
-              <th>Sample ID</th>
-              <th>Actual Profit</th>
-              <th>Predicted Profit</th>
-              <th>Residual ($)</th>
-              <th>Abs Error</th>
-              <th>% Error</th>
-              <th>Diagnostic Status</th>
+              <th>排行</th>
+              <th>公司樣本</th>
+              <th>實際獲利 (Actual)</th>
+              <th>預測獲利 (Predicted)</th>
+              <th>殘差金額 (Residual)</th>
+              <th>絕對誤差 (MAE)</th>
+              <th>偏誤百分比</th>
+              <th>診斷狀態評級</th>
             </tr>
           </thead>
           <tbody id="outliersTableBody">
@@ -1086,45 +1527,43 @@
   <!-- Footer & References -->
   <footer>
     <div class="footer-inner">
-      <div style="max-width: 650px;">
-        <h4 style="font-size: 16px; margin-bottom: 8px; color: var(--slate-900);">
-          <i class="fa-solid fa-building-columns"></i> 50 Startups CRISP-DM Machine Learning Project
+      <div style="max-width: 600px;">
+        <h4 style="font-size: 16px; margin-bottom: 10px; color: white;">
+          <i class="fa-solid fa-layer-group" style="color: var(--primary);"></i> 50 Startups CRISP-DM 資料科學與機器學習專案
         </h4>
-        <p style="line-height: 1.6; font-size: 13px;">
-          Developed for multiple linear regression model selection, parsimony validation, and statistical inference. Built with pure Vanilla HTML, CSS, JavaScript, and Chart.js.
+        <p style="font-size: 13px; color: #94a3b8; line-height: 1.7;">
+          本專案以 Python、Flask 與 Scikit-learn 實現完整 CRISP-DM 六大階段，結合格位化演算法選擇（Lasso、SFS、RFE、ElasticNet、Exhaustive Search），以奧坎剃刀原則驗證雙變數模型之泛化優勢。
         </p>
       </div>
 
-      <div style="max-width: 550px;">
-        <h4 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate-400); margin-bottom: 8px;">
-          References & Acknowledgments
+      <div style="max-width: 580px;">
+        <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 10px;">
+          學術引用與設計來源 (References)
         </h4>
         <div class="ack-card">
-          <strong>Design & Layout Reference:</strong><br>
-          Statistical calculator style inspired by <a href="https://statsunlock.com/multiple-linear-regression-calculator/" target="_blank">StatsUnlock Multiple Linear Regression Calculator</a> (featuring ANOVA, coefficients, VIF, and APA reporting aesthetics).<br>
-          <strong>Dataset:</strong> <a href="https://raw.githubusercontent.com/Avik-Jain/100-Days-Of-ML-Code/master/datasets/50_Startups.csv" target="_blank">50 Startups Dataset (Avik Jain 100-Days-Of-ML)</a>.<br>
-          <strong>Methodology:</strong> CRISP-DM (Cross-Industry Standard Process for Data Mining).
+          • <strong>設計佈局參考</strong>：<a href="https://statsunlock.com/multiple-linear-regression-calculator/" target="_blank">StatsUnlock Multiple Linear Regression Calculator</a>。<br>
+          • <strong>標準資料集</strong>：<a href="https://raw.githubusercontent.com/Avik-Jain/100-Days-Of-ML-Code/master/datasets/50_Startups.csv" target="_blank">50 Startups Dataset (Avik Jain 100-Days-Of-ML)</a>。<br>
+          • <strong>GitHub 儲存庫</strong>：<a href="https://github.com/ryanlin19960221/AIoT-DIC2-MultipleLR" target="_blank">ryanlin19960221/AIoT-DIC2-MultipleLR</a>。
         </div>
       </div>
     </div>
   </footer>
 
+  <!-- Application Logic -->
   <script>
-    // State management
     let currentAlgo = 'Lasso';
     let currentK = 2; // Default to optimal sweet spot
     let rmseChartInstance = null;
     let r2ChartInstance = null;
 
     const ALGO_COLORS = {
-      'Lasso': '#4f46e5',
-      'Forward SFS': '#ff7f0e',
-      'RFE': '#2ca02c',
-      'ElasticNet': '#d62728',
-      'Exhaustive': '#9467bd'
+      'Lasso': '#6366f1',
+      'Forward SFS': '#f59e0b',
+      'RFE': '#10b981',
+      'ElasticNet': '#f43f5e',
+      'Exhaustive': '#a855f7'
     };
 
-    // Initialize application
     document.addEventListener('DOMContentLoaded', () => {
       initCharts();
       setupEventListeners();
@@ -1133,7 +1572,7 @@
 
     function setupEventListeners() {
       // Algorithm tabs
-      const tabs = document.querySelectorAll('#algoTabs .tab-btn');
+      const tabs = document.querySelectorAll('#algoTabs .algo-tab-btn');
       tabs.forEach(btn => {
         btn.addEventListener('click', () => {
           tabs.forEach(b => b.classList.remove('active'));
@@ -1143,40 +1582,42 @@
         });
       });
 
-      // Feature count buttons
-      const kBtns = document.querySelectorAll('#kSelectorGroup .k-btn');
-      kBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          kBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentK = parseInt(btn.dataset.k);
+      // Feature count stepper buttons
+      const kNodes = document.querySelectorAll('#kStepper .k-node');
+      kNodes.forEach(node => {
+        node.addEventListener('click', () => {
+          kNodes.forEach(n => n.classList.remove('active'));
+          node.classList.add('active');
+          currentK = parseInt(node.dataset.k);
           updateDashboard();
         });
       });
 
-      // Interactive Calculator Sliders & Number inputs
-      const syncInput = (sliderId, numId, labelId, prefix = '$') => {
+      // Sliders & inputs synchronization
+      const setupSlider = (sliderId, labelId) => {
         const slider = document.getElementById(sliderId);
-        const num = document.getElementById(numId);
         const label = document.getElementById(labelId);
-
         slider.addEventListener('input', (e) => {
-          num.value = e.target.value;
-          label.textContent = prefix + Number(e.target.value).toLocaleString();
-          calculateLivePrediction();
-        });
-
-        num.addEventListener('input', (e) => {
-          slider.value = e.target.value;
-          label.textContent = prefix + Number(e.target.value).toLocaleString();
+          label.textContent = '$' + Number(e.target.value).toLocaleString();
           calculateLivePrediction();
         });
       };
 
-      syncInput('rangeRD', 'numRD', 'labelRD');
-      syncInput('rangeMkt', 'numMkt', 'labelMkt');
-      syncInput('rangeAdmin', 'numAdmin', 'labelAdmin');
+      setupSlider('rangeRD', 'labelRD');
+      setupSlider('rangeMkt', 'labelMkt');
+      setupSlider('rangeAdmin', 'labelAdmin');
       document.getElementById('selectState').addEventListener('change', calculateLivePrediction);
+    }
+
+    function applyPreset(rd, admin, mkt, state) {
+      document.getElementById('rangeRD').value = rd;
+      document.getElementById('labelRD').textContent = '$' + Number(rd).toLocaleString();
+      document.getElementById('rangeAdmin').value = admin;
+      document.getElementById('labelAdmin').textContent = '$' + Number(admin).toLocaleString();
+      document.getElementById('rangeMkt').value = mkt;
+      document.getElementById('labelMkt').textContent = '$' + Number(mkt).toLocaleString();
+      document.getElementById('selectState').value = state;
+      calculateLivePrediction();
     }
 
     function getActiveModelData() {
@@ -1191,22 +1632,22 @@
       if (!data) return;
 
       // Update KPI Cards
-      document.getElementById('valRMSE').textContent = '$' + data.rmse.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      document.getElementById('valR2').textContent = data.r2.toFixed(4);
-      document.getElementById('valAdjR2').textContent = data.adj_r2 ? data.adj_r2.toFixed(4) : 'N/A';
-      document.getElementById('valMAE').textContent = '$' + data.mae.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      document.getElementById('valFStat').textContent = data.f_stat ? data.f_stat.toFixed(1) : '347.8';
+      document.getElementById('kpiRMSE').textContent = '$' + data.rmse.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('kpiR2').textContent = data.r2.toFixed(4);
+      document.getElementById('kpiAdjR2').textContent = data.adj_r2 ? data.adj_r2.toFixed(4) : '0.9324';
+      document.getElementById('kpiMAE').textContent = '$' + data.mae.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('kpiFStat').textContent = data.f_stat ? data.f_stat.toFixed(1) : '347.8';
 
-      // Sweet spot & Overfitting badges
-      const rmseBadge = document.getElementById('rmseBadge');
+      // Badge status
+      const rmseBadge = document.getElementById('kpiRmseBadge');
       if (currentK === 2) {
-        rmseBadge.className = 'badge-tag badge-green';
-        rmseBadge.innerHTML = '<i class="fa-solid fa-award"></i> Optimal Sweet Spot';
+        rmseBadge.className = 'kpi-pill pill-green';
+        rmseBadge.innerHTML = '<i class="fa-solid fa-award"></i> 最佳極小值';
       } else if (currentK === 5) {
-        rmseBadge.className = 'badge-tag badge-amber';
-        rmseBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Overfitting Cliff';
+        rmseBadge.className = 'kpi-pill pill-amber';
+        rmseBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 過擬合反彈';
       } else {
-        rmseBadge.className = 'badge-tag badge-blue';
+        rmseBadge.className = 'kpi-pill pill-blue';
         rmseBadge.innerHTML = `k = ${currentK}`;
       }
 
@@ -1216,37 +1657,29 @@
       chipsContainer.innerHTML = '';
       data.features.forEach(feat => {
         const chip = document.createElement('span');
-        chip.className = 'feature-chip';
-        chip.textContent = feat;
+        chip.className = 'feature-chip-visual';
+        chip.innerHTML = `<i class="fa-solid fa-check" style="font-size: 10px;"></i> ${feat}`;
         chipsContainer.appendChild(chip);
       });
 
       // Parsimony notice
       const notice = document.getElementById('parsimonyNotice');
       if (currentK === 2) {
-        notice.className = 'badge-tag badge-green';
-        notice.innerHTML = '<i class="fa-solid fa-star"></i> Occam\'s Razor: 2 features yield the minimum test RMSE ($8,198.80) and peak R² (0.9474).';
+        notice.className = 'parsimony-banner pill-green';
+        notice.innerHTML = '<i class="fa-solid fa-star"></i> 奧坎剃刀原則：2 特徵模型達全域最低 RMSE ($8,198.80) 與最高 R² (0.9474)。';
       } else if (currentK === 5) {
-        notice.className = 'badge-tag badge-amber';
-        notice.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Overfitting Warning: Adding Administration & Location dummies spikes error to $9,137.99!';
+        notice.className = 'parsimony-banner pill-amber';
+        notice.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 過擬合警告：加入行政費與州別產生噪聲，測試集誤差急遽惡化至 $9,137.99！';
       } else {
-        notice.className = 'badge-tag badge-blue';
-        notice.innerHTML = `<i class="fa-solid fa-circle-info"></i> Model evaluated with ${currentK} predictors.`;
+        notice.className = 'parsimony-banner pill-blue';
+        notice.innerHTML = `<i class="fa-solid fa-circle-info"></i> 當前模型共採用 ${currentK} 項預測變數。`;
       }
 
-      // Update Equation
+      // Update Subsections
       updateEquation(data.coefficients);
-
-      // Update Coefficients Table
       updateCoefficientsTable(data.coefficients);
-
-      // Update Outliers Table
       updateOutliersTable(data.outliers);
-
-      // Update Charts
       updateCharts();
-
-      // Recalculate Live Prediction
       calculateLivePrediction();
     }
 
@@ -1261,12 +1694,12 @@
 
       coefficients.forEach(c => {
         if (c.feature.includes('Intercept')) return;
-        const sign = c.coef >= 0 ? '<span class="eq-pos">+</span>' : '<span class="eq-neg">-</span>';
+        const sign = c.coef >= 0 ? '<span class="eq-plus">+</span>' : '<span class="eq-minus">-</span>';
         const absVal = Math.abs(c.coef).toFixed(4);
         parts.push(`${sign} ${absVal} × <span class="eq-var">(${c.feature})</span>`);
       });
 
-      box.innerHTML = `<strong>Profit</strong> = ${parts.join(' ')}`;
+      box.innerHTML = `<strong style="color: white;">Profit</strong> = ${parts.join(' ')}`;
     }
 
     function updateCoefficientsTable(coefficients) {
@@ -1276,29 +1709,99 @@
       coefficients.forEach(c => {
         const tr = document.createElement('tr');
         const isIntercept = c.feature.includes('Intercept');
-        const pBadge = c.pvalue < 0.05 
-          ? `<span class="badge-tag badge-green">${c.pvalue < 0.0001 ? '< 0.0001' : c.pvalue.toFixed(4)} <i class="fa-solid fa-check"></i></span>`
-          : `<span class="badge-tag badge-amber">${c.pvalue.toFixed(4)} (n.s.)</span>`;
         
-        let vifDisplay = '-';
+        let pBadge = c.pvalue < 0.05 
+          ? `<span class="kpi-pill pill-green">${c.pvalue < 0.0001 ? '< 0.0001' : c.pvalue.toFixed(4)} ***</span>`
+          : `<span class="kpi-pill pill-amber">${c.pvalue.toFixed(4)} (不顯著)</span>`;
+
+        let vifContent = '<span style="color: var(--text-dim);">-</span>';
         if (!isIntercept && c.vif !== null) {
-          if (c.vif < 5) {
-            vifDisplay = `<span class="badge-tag badge-green">${c.vif.toFixed(2)} (Safe)</span>`;
-          } else {
-            vifDisplay = `<span class="badge-tag badge-amber">${c.vif.toFixed(2)} (Collinear)</span>`;
-          }
+          const vifVal = c.vif;
+          const isSafe = vifVal < 5;
+          const fillColor = isSafe ? '#10b981' : '#f59e0b';
+          const fillWidth = Math.min(100, (vifVal / 10) * 100);
+
+          vifContent = `
+            <span style="font-family: 'JetBrains Mono'; font-weight: 600; color: ${isSafe ? '#34d399' : '#fde68a'};">${vifVal.toFixed(2)}</span>
+            <div class="vif-gauge-bar">
+              <div class="vif-fill" style="width: ${fillWidth}%; background: ${fillColor};"></div>
+            </div>
+          `;
         }
 
         tr.innerHTML = `
-          <td><strong>${c.feature}</strong></td>
-          <td style="font-family: 'Fira Code', monospace; font-weight: 600;">${c.coef.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}</td>
-          <td>${c.stderr.toFixed(4)}</td>
-          <td>${c.tstat.toFixed(3)}</td>
+          <td><strong style="color: white;">${c.feature}</strong></td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 700; color: #a5b4fc;">${c.coef.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}</td>
+          <td style="font-family: 'JetBrains Mono'; color: var(--text-muted);">${c.stderr.toFixed(4)}</td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 600;">${c.tstat.toFixed(3)}</td>
           <td>${pBadge}</td>
-          <td style="font-size: 12px; color: var(--slate-600);">[${c.ci_lower.toFixed(2)}, ${c.ci_upper.toFixed(2)}]</td>
-          <td>${vifDisplay}</td>
+          <td style="font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim);">[${c.ci_lower.toFixed(2)}, ${c.ci_upper.toFixed(2)}]</td>
+          <td>${vifContent}</td>
         `;
         tbody.appendChild(tr);
+      });
+    }
+
+    function calculateLivePrediction() {
+      const data = getActiveModelData();
+      if (!data) return;
+
+      const rd = parseFloat(document.getElementById('rangeRD').value) || 0;
+      const mkt = parseFloat(document.getElementById('rangeMkt').value) || 0;
+      const admin = parseFloat(document.getElementById('rangeAdmin').value) || 0;
+      const state = document.getElementById('selectState').value;
+
+      let totalProfit = 0;
+      let contributions = [];
+
+      data.coefficients.forEach(c => {
+        let val = 0;
+        let itemLabel = c.feature;
+
+        if (c.feature.includes('Intercept')) {
+          val = c.coef;
+          itemLabel = '基準常數項 (Intercept)';
+        } else if (c.feature === 'R&D Spend') {
+          val = c.coef * rd;
+        } else if (c.feature === 'Marketing Spend') {
+          val = c.coef * mkt;
+        } else if (c.feature === 'Administration') {
+          val = c.coef * admin;
+        } else if (c.feature === 'State_Florida') {
+          val = (state === 'Florida') ? c.coef : 0;
+        } else if (c.feature === 'State_New York') {
+          val = (state === 'New York') ? c.coef : 0;
+        }
+
+        totalProfit += val;
+        contributions.push({ label: itemLabel, amount: val });
+      });
+
+      document.getElementById('predProfitOutput').textContent = '$' + totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      // Render Waterfall Breakdown Bars
+      const breakdownBox = document.getElementById('breakdownContainer');
+      breakdownBox.innerHTML = '';
+      
+      const maxVal = Math.max(...contributions.map(c => Math.abs(c.amount)), 1);
+
+      contributions.forEach(item => {
+        const pct = Math.min(100, (Math.abs(item.amount) / maxVal) * 100);
+        const isPos = item.amount >= 0;
+        const color = isPos ? '#34d399' : '#f43f5e';
+        const sign = isPos ? '+' : '-';
+
+        const row = document.createElement('div');
+        row.innerHTML = `
+          <div class="breakdown-item">
+            <span style="color: #e2e8f0;">${item.label}</span>
+            <span style="font-family: 'JetBrains Mono'; font-weight: 700; color: ${color};">${sign}$${Math.abs(item.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+          </div>
+          <div class="breakdown-bar-wrap">
+            <div class="breakdown-bar-fill" style="width: ${pct}%; background: ${color};"></div>
+          </div>
+        `;
+        breakdownBox.appendChild(row);
       });
     }
 
@@ -1310,61 +1813,24 @@
         const tr = document.createElement('tr');
         const isHigh = o.abs_error > 10000;
         const statusBadge = isHigh 
-          ? `<span class="badge-tag badge-amber"><span class="status-dot dot-amber"></span> High Residual</span>`
-          : `<span class="badge-tag badge-green"><span class="status-dot dot-green"></span> In Range</span>`;
+          ? `<span class="kpi-pill pill-amber"><i class="fa-solid fa-triangle-exclamation"></i> 高殘差標的</span>`
+          : `<span class="kpi-pill pill-green"><i class="fa-solid fa-check"></i> 預測極精準</span>`;
 
         tr.innerHTML = `
-          <td style="font-weight: 700;">#${o.rank}</td>
-          <td>Startup #${o.index}</td>
-          <td style="font-family: 'Fira Code', monospace;">$${o.actual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="font-family: 'Fira Code', monospace;">$${o.predicted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="color: ${o.residual >= 0 ? '#059669' : '#dc2626'}; font-weight: 600;">${o.residual >= 0 ? '+' : ''}$${o.residual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td>$${o.abs_error.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td>${o.pct_error.toFixed(2)}%</td>
+          <td style="font-weight: 800; color: var(--cyan);">#${o.rank}</td>
+          <td>新創公司 #${o.index}</td>
+          <td style="font-family: 'JetBrains Mono'; color: #f8fafc;">$${o.actual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="font-family: 'JetBrains Mono'; color: #a5b4fc;">$${o.predicted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 700; color: ${o.residual >= 0 ? '#34d399' : '#f43f5e'};">${o.residual >= 0 ? '+' : ''}$${o.residual.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="font-family: 'JetBrains Mono';">$${o.abs_error.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td style="font-family: 'JetBrains Mono'; font-weight: 600;">${o.pct_error.toFixed(2)}%</td>
           <td>${statusBadge}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function calculateLivePrediction() {
-      const data = getActiveModelData();
-      if (!data) return;
-
-      const rd = parseFloat(document.getElementById('numRD').value) || 0;
-      const mkt = parseFloat(document.getElementById('numMkt').value) || 0;
-      const admin = parseFloat(document.getElementById('numAdmin').value) || 0;
-      const state = document.getElementById('selectState').value;
-
-      let pred = 0;
-      let usedFeatures = [];
-
-      data.coefficients.forEach(c => {
-        if (c.feature.includes('Intercept')) {
-          pred += c.coef;
-        } else if (c.feature === 'R&D Spend') {
-          pred += c.coef * rd;
-          usedFeatures.push(`R&D: +$${(c.coef * rd).toFixed(0)}`);
-        } else if (c.feature === 'Marketing Spend') {
-          pred += c.coef * mkt;
-          usedFeatures.push(`Marketing: +$${(c.coef * mkt).toFixed(0)}`);
-        } else if (c.feature === 'Administration') {
-          pred += c.coef * admin;
-          usedFeatures.push(`Admin: ${(c.coef * admin >= 0 ? '+' : '')}$${(c.coef * admin).toFixed(0)}`);
-        } else if (c.feature === 'State_Florida' && state === 'Florida') {
-          pred += c.coef * 1;
-          usedFeatures.push(`Florida dummy: ${(c.coef >= 0 ? '+' : '')}$${c.coef.toFixed(0)}`);
-        } else if (c.feature === 'State_New York' && state === 'New York') {
-          pred += c.coef * 1;
-          usedFeatures.push(`NY dummy: ${(c.coef >= 0 ? '+' : '')}$${c.coef.toFixed(0)}`);
-        }
-      });
-
-      document.getElementById('predProfitOutput').textContent = '$' + pred.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      document.getElementById('predFormulaNote').innerHTML = `Active predictors: ${data.features.join(', ')}<br><span style="font-size: 11px; color: #cbd5e1;">(${usedFeatures.join(' | ')})</span>`;
-    }
-
-    // Chart.js Setup
+    // Chart.js Setup with Futuristic Glowing Aesthetic
     function initCharts() {
       const ctxRMSE = document.getElementById('rmseChart').getContext('2d');
       const ctxR2 = document.getElementById('r2Chart').getContext('2d');
@@ -1375,20 +1841,26 @@
         plugins: {
           legend: {
             display: false,
-            position: 'top'
+            labels: {
+              color: '#94a3b8',
+              font: { family: 'Inter', size: 12, weight: 600 }
+            }
           },
           tooltip: {
-            backgroundColor: 'rgba(15, 23, 42, 0.92)',
-            titleFont: { family: 'Outfit', size: 13 },
+            backgroundColor: 'rgba(15, 23, 42, 0.94)',
+            titleFont: { family: 'Outfit', size: 14, weight: 700 },
             bodyFont: { family: 'Inter', size: 12 },
-            padding: 12,
-            cornerRadius: 8,
+            borderColor: 'rgba(99, 102, 241, 0.3)',
+            borderWidth: 1,
+            padding: 14,
+            cornerRadius: 10,
+            boxPadding: 6,
             callbacks: {
               afterLabel: function(context) {
                 const k = context.dataIndex + 1;
                 const algo = currentAlgo === 'ALL' ? context.dataset.label : currentAlgo;
                 const modelItem = window.MODEL_DATA[algo][k - 1];
-                return 'Features: ' + modelItem.features.join(', ');
+                return '選入特徵: ' + modelItem.features.join(', ');
               }
             }
           }
@@ -1397,30 +1869,32 @@
           x: {
             title: {
               display: true,
-              text: 'Number of Features (k)',
+              text: '選用特徵數 (k)',
+              color: '#94a3b8',
               font: { family: 'Inter', weight: 600, size: 12 }
             },
-            grid: { color: '#f1f5f9' }
+            ticks: { color: '#64748b', font: { family: 'JetBrains Mono' } },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
           },
           y: {
-            grid: { color: '#f1f5f9' }
+            ticks: { color: '#64748b', font: { family: 'JetBrains Mono' } },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
           }
         },
         onClick: (e, elements) => {
           if (elements.length > 0) {
             const index = elements[0].index;
             const newK = index + 1;
-            const kBtns = document.querySelectorAll('#kSelectorGroup .k-btn');
-            kBtns.forEach(b => {
-              if (parseInt(b.dataset.k) === newK) {
-                b.click();
+            const kNodes = document.querySelectorAll('#kStepper .k-node');
+            kNodes.forEach(node => {
+              if (parseInt(node.dataset.k) === newK) {
+                node.click();
               }
             });
           }
         }
       };
 
-      // RMSE Chart Instance
       rmseChartInstance = new Chart(ctxRMSE, {
         type: 'line',
         data: { labels: ['1', '2', '3', '4', '5'], datasets: [] },
@@ -1432,7 +1906,8 @@
               ...commonOptions.scales.y,
               title: {
                 display: true,
-                text: 'RMSE ($) (Lower is Better)',
+                text: 'RMSE ($) (愈低愈佳)',
+                color: '#94a3b8',
                 font: { family: 'Inter', weight: 600, size: 12 }
               }
             }
@@ -1440,7 +1915,6 @@
         }
       });
 
-      // R2 Chart Instance
       r2ChartInstance = new Chart(ctxR2, {
         type: 'line',
         data: { labels: ['1', '2', '3', '4', '5'], datasets: [] },
@@ -1452,7 +1926,8 @@
               ...commonOptions.scales.y,
               title: {
                 display: true,
-                text: 'R-squared (Higher is Better)',
+                text: 'R² 決定係數 (愈高愈佳)',
+                color: '#94a3b8',
                 font: { family: 'Inter', weight: 600, size: 12 }
               }
             }
@@ -1463,7 +1938,7 @@
 
     function updateCharts() {
       const isCompareAll = currentAlgo === 'ALL';
-      document.getElementById('rmseChartBadge').textContent = isCompareAll ? 'Comparing 5 Methods' : currentAlgo;
+      document.getElementById('rmseChartBadge').textContent = isCompareAll ? '5 大模型同屏對比' : currentAlgo;
       
       let datasetsRMSE = [];
       let datasetsR2 = [];
@@ -1472,23 +1947,23 @@
         ? ['Lasso', 'Forward SFS', 'RFE', 'ElasticNet', 'Exhaustive']
         : [currentAlgo];
 
-      algosToRender.forEach((algo, idx) => {
+      algosToRender.forEach((algo) => {
         const algoData = window.MODEL_DATA[algo];
         const rmsePoints = algoData.map(item => item.rmse);
         const r2Points = algoData.map(item => item.r2);
-        const color = ALGO_COLORS[algo] || '#4f46e5';
+        const color = ALGO_COLORS[algo] || '#6366f1';
 
-        // Point styles
-        const pointRadii = algoData.map(item => item.k === currentK ? 7 : (item.k === 2 ? 6 : 4));
+        const pointRadii = algoData.map(item => item.k === currentK ? 8 : (item.k === 2 ? 6 : 4));
         const pointColors = algoData.map(item => item.k === 2 ? '#10b981' : color);
 
         datasetsRMSE.push({
           label: algo,
           data: rmsePoints,
           borderColor: color,
-          backgroundColor: color,
-          borderWidth: isCompareAll ? 2 : 2.5,
-          tension: 0.1,
+          backgroundColor: isCompareAll ? color : 'rgba(99, 102, 241, 0.08)',
+          fill: !isCompareAll,
+          borderWidth: isCompareAll ? 2.2 : 3,
+          tension: 0.25,
           pointRadius: pointRadii,
           pointBackgroundColor: pointColors,
           pointBorderColor: '#ffffff',
@@ -1499,9 +1974,10 @@
           label: algo,
           data: r2Points,
           borderColor: color,
-          backgroundColor: color,
-          borderWidth: isCompareAll ? 2 : 2.5,
-          tension: 0.1,
+          backgroundColor: isCompareAll ? color : 'rgba(16, 185, 129, 0.08)',
+          fill: !isCompareAll,
+          borderWidth: isCompareAll ? 2.2 : 3,
+          tension: 0.25,
           pointRadius: pointRadii,
           pointBackgroundColor: pointColors,
           pointBorderColor: '#ffffff',
@@ -1516,6 +1992,18 @@
       r2ChartInstance.data.datasets = datasetsR2;
       r2ChartInstance.options.plugins.legend.display = isCompareAll;
       r2ChartInstance.update();
+    }
+
+    function showCrispInfo(stage) {
+      const stages = {
+        1: "【Stage 1: 商業理解】新創投資決策核心：透過研發、行政、行銷支出及州別預測獲利，鎖定核心驅動引擎。",
+        2: "【Stage 2: 資料理解】分析 50 筆觀察值，驗證無缺失值，掌握特徵分配與統計量。",
+        3: "【Stage 3: 資料準備】One-Hot Encoding 消除州別之虛擬變數陷阱 (Dummy Variable Trap)，消除多重共線性。",
+        4: "【Stage 4: 建立模型】比較 LassoCV、Forward SFS、RFE、ElasticNetCV、Exhaustive Search 等 5 種特徵選擇演算法。",
+        5: "【Stage 5: 模型評估】落實奧坎剃刀原則：k=2 為樣本外誤差最低點 ($8,198)，k=5 出現嚴重過擬合。",
+        6: "【Stage 6: 部署推論】提供即時預測 API、要素邊際貢獻瀑布圖與序列化 .pkl 模型持久化。"
+      };
+      alert(stages[stage]);
     }
   </script>
 </body>
